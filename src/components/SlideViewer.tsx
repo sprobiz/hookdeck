@@ -4,16 +4,19 @@ import { useState } from "react";
 import { SlideItem } from "@/types/deck";
 import { ChevronLeft, ChevronRight, Download, Sparkles, Copy, Check } from "lucide-react";
 import { exportToPPTX } from "@/utils/exportPptx";
+import { translations, Language } from "@/utils/translations";
 
 interface SlideViewerProps {
   slides: SlideItem[];
   deckTitle: string;
   style: string;
+  lang: Language;
 }
 
-export default function SlideViewer({ slides, deckTitle, style }: SlideViewerProps) {
+export default function SlideViewer({ slides, deckTitle, style, lang }: SlideViewerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [copied, setCopied] = useState(false);
+  const t = translations[lang].viewer;
 
   if (!slides || slides.length === 0) return null;
 
@@ -29,11 +32,11 @@ export default function SlideViewer({ slides, deckTitle, style }: SlideViewerPro
   const getStyleClass = () => {
     switch (style) {
       case "dark":
-        return "bg-slate-900 text-white border-slate-700";
+        return "bg-slate-950 text-white border-slate-800";
       case "corporate":
-        return "bg-slate-50 text-slate-800 border-slate-200";
+        return "bg-slate-900 text-slate-100 border-slate-800";
       case "creative":
-        return "bg-amber-50 text-amber-950 border-amber-200";
+        return "bg-[#1c1815] text-[#f7eee4] border-[#382f28]";
       default:
         return "bg-white text-slate-900 border-slate-200";
     }
@@ -42,13 +45,13 @@ export default function SlideViewer({ slides, deckTitle, style }: SlideViewerPro
   return (
     <div className="w-full max-w-4xl mx-auto my-8">
       {/* 툴바 */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-3 mb-4 bg-white/80 backdrop-blur border border-slate-200 rounded-2xl shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 mb-4 bg-slate-900/90 backdrop-blur border border-slate-800 rounded-2xl shadow-xl">
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-50 text-blue-600 border border-blue-100 flex items-center gap-1">
+          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center gap-1">
             <Sparkles className="w-3.5 h-3.5" />
-            Slide {currentIndex + 1} / {slides.length}
+            {t.slide} {currentIndex + 1} / {slides.length}
           </span>
-          <span className="text-sm font-medium text-slate-600 truncate max-w-[200px] sm:max-w-xs">
+          <span className="text-sm font-medium text-slate-200 truncate max-w-[200px] sm:max-w-xs">
             {deckTitle}
           </span>
         </div>
@@ -56,34 +59,34 @@ export default function SlideViewer({ slides, deckTitle, style }: SlideViewerPro
         <div className="flex items-center gap-2">
           <button
             onClick={handleCopyText}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-lg transition border border-slate-700"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-            {copied ? "복사됨" : "텍스트 복사"}
+            {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? t.copied : t.copyText}
           </button>
           <button
             onClick={() => exportToPPTX({ title: deckTitle, description: "", slides }, style)}
-            className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition"
+            className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-lg shadow-md shadow-blue-500/20 transition"
           >
             <Download className="w-3.5 h-3.5" />
-            PPTX 다운로드
+            {t.downloadPptx}
           </button>
         </div>
       </div>
 
       {/* 16:9 슬라이드 캔버스 프레임 */}
-      <div className="relative w-full aspect-[16/9] shadow-2xl rounded-2xl overflow-hidden border border-slate-200/80 transition-all">
+      <div className="relative w-full aspect-[16/9] shadow-2xl rounded-2xl overflow-hidden border border-slate-800 transition-all">
         <div className={`w-full h-full p-8 md:p-14 flex flex-col justify-between ${getStyleClass()}`}>
           {currentSlide.layout === "title" ? (
             <div className="flex flex-col items-center justify-center flex-1 text-center">
-              <span className="px-3 py-1 mb-4 text-xs font-bold tracking-widest uppercase rounded-full bg-blue-500/10 text-blue-600">
+              <span className="px-3 py-1 mb-4 text-xs font-bold tracking-widest uppercase rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">
                 Strategic Deck
               </span>
               <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4 max-w-2xl">
                 {currentSlide.title}
               </h1>
               {currentSlide.subtitle && (
-                <p className="text-base md:text-xl font-medium text-blue-500 max-w-xl">
+                <p className="text-base md:text-xl font-medium text-blue-400 max-w-xl">
                   {currentSlide.subtitle}
                 </p>
               )}
@@ -98,7 +101,7 @@ export default function SlideViewer({ slides, deckTitle, style }: SlideViewerPro
               <div>
                 <h2 className="text-2xl md:text-4xl font-bold mb-2">{currentSlide.title}</h2>
                 {currentSlide.subtitle && (
-                  <p className="text-sm md:text-base text-blue-500 font-medium mb-6">
+                  <p className="text-sm md:text-base text-blue-400 font-medium mb-6">
                     {currentSlide.subtitle}
                   </p>
                 )}
@@ -107,23 +110,23 @@ export default function SlideViewer({ slides, deckTitle, style }: SlideViewerPro
                 {currentSlide.metrics.map((m, idx) => (
                   <div
                     key={idx}
-                    className="p-6 rounded-2xl bg-white/60 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-center shadow-sm"
+                    className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center shadow-inner"
                   >
-                    <div className="text-3xl md:text-4xl font-black text-blue-600 dark:text-blue-400 mb-2">
+                    <div className="text-3xl md:text-4xl font-black text-blue-400 mb-2">
                       {m.value}
                     </div>
                     <div className="text-xs md:text-sm font-semibold opacity-80">{m.label}</div>
                   </div>
                 ))}
               </div>
-              <div className="text-right text-xs opacity-50">MagicDeck AI Generated</div>
+              <div className="text-right text-xs opacity-50">SlideForge.ai Generated</div>
             </div>
           ) : (
             <div className="flex flex-col h-full justify-between">
               <div>
                 <h2 className="text-2xl md:text-3xl font-bold mb-2">{currentSlide.title}</h2>
                 {currentSlide.subtitle && (
-                  <p className="text-sm md:text-base text-blue-500 font-medium mb-6">
+                  <p className="text-sm md:text-base text-blue-400 font-medium mb-6">
                     {currentSlide.subtitle}
                   </p>
                 )}
@@ -131,18 +134,18 @@ export default function SlideViewer({ slides, deckTitle, style }: SlideViewerPro
               <ul className="space-y-4 my-auto">
                 {currentSlide.content.map((item, idx) => (
                   <li key={idx} className="flex items-start gap-3 text-base md:text-lg">
-                    <span className="w-2 h-2 mt-2.5 rounded-full bg-blue-600 flex-shrink-0" />
+                    <span className="w-2 h-2 mt-2.5 rounded-full bg-blue-500 flex-shrink-0" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
-              <div className="text-right text-xs opacity-50">MagicDeck AI Generated</div>
+              <div className="text-right text-xs opacity-50">SlideForge.ai Generated</div>
             </div>
           )}
 
           {/* 슬라이드 번호 풋터 */}
-          <div className="flex justify-between items-center pt-4 border-t border-slate-200/30 text-xs opacity-60">
-            <span>Confidential & Proprietary</span>
+          <div className="flex justify-between items-center pt-4 border-t border-slate-700/50 text-xs opacity-60">
+            <span>{t.confidential}</span>
             <span>{currentIndex + 1} / {slides.length}</span>
           </div>
         </div>
@@ -151,14 +154,14 @@ export default function SlideViewer({ slides, deckTitle, style }: SlideViewerPro
         <button
           onClick={() => setCurrentIndex((prev) => Math.max(0, prev - 1))}
           disabled={currentIndex === 0}
-          className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur disabled:opacity-20 disabled:cursor-not-allowed transition"
+          className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 hover:bg-black/80 text-white backdrop-blur disabled:opacity-20 disabled:cursor-not-allowed transition"
         >
           <ChevronLeft className="w-5 h-5" />
         </button>
         <button
           onClick={() => setCurrentIndex((prev) => Math.min(slides.length - 1, prev + 1))}
           disabled={currentIndex === slides.length - 1}
-          className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/40 hover:bg-black/60 text-white backdrop-blur disabled:opacity-20 disabled:cursor-not-allowed transition"
+          className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 hover:bg-black/80 text-white backdrop-blur disabled:opacity-20 disabled:cursor-not-allowed transition"
         >
           <ChevronRight className="w-5 h-5" />
         </button>
@@ -172,12 +175,12 @@ export default function SlideViewer({ slides, deckTitle, style }: SlideViewerPro
             onClick={() => setCurrentIndex(idx)}
             className={`flex-shrink-0 w-24 h-14 rounded-lg border text-left p-1.5 transition text-[10px] truncate ${
               currentIndex === idx
-                ? "border-blue-600 ring-2 ring-blue-500/20 bg-blue-50"
-                : "border-slate-200 bg-white hover:border-slate-300"
+                ? "border-blue-500 ring-2 ring-blue-500/20 bg-blue-950/40 text-blue-300"
+                : "border-slate-800 bg-slate-900 text-slate-400 hover:border-slate-700"
             }`}
           >
-            <div className="font-bold text-slate-700">Slide {idx + 1}</div>
-            <div className="text-slate-500 truncate">{s.title}</div>
+            <div className="font-bold">Slide {idx + 1}</div>
+            <div className="opacity-80 truncate">{s.title}</div>
           </button>
         ))}
       </div>

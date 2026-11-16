@@ -6,28 +6,26 @@ export function exportToPPTX(deck: DeckResponse, style: string = 'minimal') {
   pres.layout = "LAYOUT_16x9";
   pres.title = deck.title;
 
-  // 스타일 테마 색상 정의
-  const themeColors: Record<string, { bg: string; title: string; text: string; accent: string }> = {
-    minimal: { bg: "FFFFFF", title: "0F172A", text: "334155", accent: "0284C7" },
-    corporate: { bg: "F8FAFC", title: "1E293B", text: "475569", accent: "2563EB" },
-    creative: { bg: "FFFBEB", title: "78350F", text: "92400E", accent: "D97706" },
-    dark: { bg: "0F172A", title: "F8FAFC", text: "CBD5E1", accent: "38BDF8" },
+  const themeColors: Record<string, { bg: string; title: string; text: string; accent: string; cardBg: string }> = {
+    minimal: { bg: "FFFFFF", title: "0F172A", text: "334155", accent: "2563EB", cardBg: "F1F5F9" },
+    corporate: { bg: "0B132B", title: "F8FAFC", text: "CBD5E1", accent: "38BDF8", cardBg: "1C2541" },
+    creative: { bg: "1C1815", title: "F7EEE4", text: "D4C7B8", accent: "F59E0B", cardBg: "2B241E" },
+    dark: { bg: "090D16", title: "FFFFFF", text: "94A3B8", accent: "6366F1", cardBg: "131A2B" },
   };
 
-  const theme = themeColors[style] || themeColors.minimal;
+  const theme = themeColors[style] || themeColors.dark;
 
   deck.slides.forEach((s: SlideItem) => {
     const slide = pres.addSlide();
     slide.background = { color: theme.bg };
 
     if (s.layout === 'title') {
-      // 타이틀 슬라이드
       slide.addText(s.title, {
         x: 1.0,
-        y: 2.5,
+        y: 2.3,
         w: 11.3,
-        h: 1.8,
-        fontSize: 36,
+        h: 2.0,
+        fontSize: 38,
         bold: true,
         color: theme.title,
         align: "center",
@@ -35,7 +33,7 @@ export function exportToPPTX(deck: DeckResponse, style: string = 'minimal') {
       if (s.subtitle || s.content[0]) {
         slide.addText(s.subtitle || s.content[0], {
           x: 1.5,
-          y: 4.4,
+          y: 4.5,
           w: 10.3,
           h: 1.0,
           fontSize: 20,
@@ -44,7 +42,6 @@ export function exportToPPTX(deck: DeckResponse, style: string = 'minimal') {
         });
       }
     } else if (s.layout === 'metrics' && s.metrics) {
-      // 지표/통계 슬라이드
       slide.addText(s.title, {
         x: 1.0,
         y: 0.8,
@@ -63,7 +60,7 @@ export function exportToPPTX(deck: DeckResponse, style: string = 'minimal') {
           y: 2.2,
           w: cardWidth,
           h: 3.5,
-          fill: { color: style === 'dark' ? "1E293B" : "F1F5F9" },
+          fill: { color: theme.cardBg },
           line: { color: theme.accent, width: 1.5 },
         });
 
@@ -89,7 +86,6 @@ export function exportToPPTX(deck: DeckResponse, style: string = 'minimal') {
         });
       });
     } else {
-      // 일반 불렛 & 본문 슬라이드
       slide.addText(s.title, {
         x: 1.0,
         y: 0.8,
@@ -126,14 +122,13 @@ export function exportToPPTX(deck: DeckResponse, style: string = 'minimal') {
       });
     }
 
-    // 우측 하단 슬라이드 번호 및 워터마크
-    slide.addText(`${s.slideNumber} | MagicDeck AI`, {
+    slide.addText(`${s.slideNumber} | SlideForge.ai`, {
       x: 10.5,
       y: 6.8,
       w: 2.3,
       h: 0.4,
       fontSize: 10,
-      color: "94A3B8",
+      color: "64748B",
       align: "right",
     });
   });
