@@ -5,18 +5,20 @@ import { SlideItem } from "@/types/deck";
 import { ChevronLeft, ChevronRight, Download, Sparkles, Copy, Check } from "lucide-react";
 import { exportToPPTX } from "@/utils/exportPptx";
 import { translations, Language } from "@/utils/translations";
+import { getThemeById } from "@/utils/themes";
 
 interface SlideViewerProps {
   slides: SlideItem[];
   deckTitle: string;
-  style: string;
+  themeId: string;
   lang: Language;
 }
 
-export default function SlideViewer({ slides, deckTitle, style, lang }: SlideViewerProps) {
+export default function SlideViewer({ slides, deckTitle, themeId, lang }: SlideViewerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [copied, setCopied] = useState(false);
   const t = translations[lang].viewer;
+  const theme = getThemeById(themeId);
 
   if (!slides || slides.length === 0) return null;
 
@@ -29,29 +31,19 @@ export default function SlideViewer({ slides, deckTitle, style, lang }: SlideVie
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const getStyleClass = () => {
-    switch (style) {
-      case "dark":
-        return "bg-slate-950 text-white border-slate-800";
-      case "corporate":
-        return "bg-slate-900 text-slate-100 border-slate-800";
-      case "creative":
-        return "bg-[#1c1815] text-[#f7eee4] border-[#382f28]";
-      default:
-        return "bg-white text-slate-900 border-slate-200";
-    }
-  };
-
   return (
     <div className="w-full max-w-4xl mx-auto my-8">
       {/* 툴바 */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 mb-4 bg-slate-900/90 backdrop-blur border border-slate-800 rounded-2xl shadow-xl">
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center gap-1">
+          <span className="px-3 py-1 text-xs font-semibold rounded-full bg-pink-500/20 text-pink-400 border border-pink-500/30 flex items-center gap-1">
             <Sparkles className="w-3.5 h-3.5" />
             {t.slide} {currentIndex + 1} / {slides.length}
           </span>
-          <span className="text-sm font-medium text-slate-200 truncate max-w-[200px] sm:max-w-xs">
+          <span className="text-xs px-2.5 py-0.5 rounded-md bg-slate-800 text-slate-300 border border-slate-700">
+            {lang === "ko" ? theme.nameKo : theme.nameEn}
+          </span>
+          <span className="text-sm font-medium text-slate-200 truncate max-w-[160px] sm:max-w-xs">
             {deckTitle}
           </span>
         </div>
@@ -65,8 +57,8 @@ export default function SlideViewer({ slides, deckTitle, style, lang }: SlideVie
             {copied ? t.copied : t.copyText}
           </button>
           <button
-            onClick={() => exportToPPTX({ title: deckTitle, description: "", slides }, style)}
-            className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 rounded-lg shadow-md shadow-blue-500/20 transition"
+            onClick={() => exportToPPTX({ title: deckTitle, description: "", slides }, themeId)}
+            className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-pink-500 to-rose-500 hover:opacity-95 rounded-lg shadow-md shadow-pink-500/20 transition"
           >
             <Download className="w-3.5 h-3.5" />
             {t.downloadPptx}
@@ -75,22 +67,22 @@ export default function SlideViewer({ slides, deckTitle, style, lang }: SlideVie
       </div>
 
       {/* 16:9 슬라이드 캔버스 프레임 */}
-      <div className="relative w-full aspect-[16/9] shadow-2xl rounded-2xl overflow-hidden border border-slate-800 transition-all">
-        <div className={`w-full h-full p-8 md:p-14 flex flex-col justify-between ${getStyleClass()}`}>
+      <div className={`relative w-full aspect-[16/9] shadow-2xl rounded-2xl overflow-hidden border ${theme.cssBorder} transition-all`}>
+        <div className={`w-full h-full p-8 md:p-14 flex flex-col justify-between ${theme.cssBg}`}>
           {currentSlide.layout === "title" ? (
             <div className="flex flex-col items-center justify-center flex-1 text-center">
-              <span className="px-3 py-1 mb-4 text-xs font-bold tracking-widest uppercase rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30">
-                Strategic Deck
+              <span className={`px-3 py-1 mb-4 text-xs font-bold tracking-widest uppercase rounded-full ${theme.cssCard} ${theme.cssAccent}`}>
+                HookDeck PRO
               </span>
-              <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4 max-w-2xl">
+              <h1 className={`text-3xl md:text-5xl font-extrabold tracking-tight mb-4 max-w-2xl ${theme.cssTitle}`}>
                 {currentSlide.title}
               </h1>
               {currentSlide.subtitle && (
-                <p className="text-base md:text-xl font-medium text-blue-400 max-w-xl">
+                <p className={`text-base md:text-xl font-medium max-w-xl ${theme.cssAccent}`}>
                   {currentSlide.subtitle}
                 </p>
               )}
-              <div className="mt-8 flex gap-4 text-xs opacity-60">
+              <div className={`mt-8 flex gap-4 text-xs opacity-60 ${theme.cssText}`}>
                 {currentSlide.content.map((item, idx) => (
                   <span key={idx}>{item}</span>
                 ))}
@@ -99,9 +91,9 @@ export default function SlideViewer({ slides, deckTitle, style, lang }: SlideVie
           ) : currentSlide.layout === "metrics" && currentSlide.metrics ? (
             <div className="flex flex-col h-full justify-between">
               <div>
-                <h2 className="text-2xl md:text-4xl font-bold mb-2">{currentSlide.title}</h2>
+                <h2 className={`text-2xl md:text-4xl font-bold mb-2 ${theme.cssTitle}`}>{currentSlide.title}</h2>
                 {currentSlide.subtitle && (
-                  <p className="text-sm md:text-base text-blue-400 font-medium mb-6">
+                  <p className={`text-sm md:text-base font-medium mb-6 ${theme.cssAccent}`}>
                     {currentSlide.subtitle}
                   </p>
                 )}
@@ -110,41 +102,41 @@ export default function SlideViewer({ slides, deckTitle, style, lang }: SlideVie
                 {currentSlide.metrics.map((m, idx) => (
                   <div
                     key={idx}
-                    className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center shadow-inner"
+                    className={`p-6 rounded-2xl ${theme.cssCard} border ${theme.cssBorder} text-center shadow-inner`}
                   >
-                    <div className="text-3xl md:text-4xl font-black text-blue-400 mb-2">
+                    <div className={`text-3xl md:text-4xl font-black mb-2 ${theme.cssAccent}`}>
                       {m.value}
                     </div>
-                    <div className="text-xs md:text-sm font-semibold opacity-80">{m.label}</div>
+                    <div className={`text-xs md:text-sm font-semibold ${theme.cssText}`}>{m.label}</div>
                   </div>
                 ))}
               </div>
-              <div className="text-right text-xs opacity-50">SlideForge.ai Generated</div>
+              <div className={`text-right text-xs opacity-50 ${theme.cssText}`}>HookDeck PRO Generated</div>
             </div>
           ) : (
             <div className="flex flex-col h-full justify-between">
               <div>
-                <h2 className="text-2xl md:text-3xl font-bold mb-2">{currentSlide.title}</h2>
+                <h2 className={`text-2xl md:text-3xl font-bold mb-2 ${theme.cssTitle}`}>{currentSlide.title}</h2>
                 {currentSlide.subtitle && (
-                  <p className="text-sm md:text-base text-blue-400 font-medium mb-6">
+                  <p className={`text-sm md:text-base font-medium mb-6 ${theme.cssAccent}`}>
                     {currentSlide.subtitle}
                   </p>
                 )}
               </div>
               <ul className="space-y-4 my-auto">
                 {currentSlide.content.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-base md:text-lg">
-                    <span className="w-2 h-2 mt-2.5 rounded-full bg-blue-500 flex-shrink-0" />
+                  <li key={idx} className={`flex items-start gap-3 text-base md:text-lg ${theme.cssText}`}>
+                    <span className="w-2 h-2 mt-2.5 rounded-full bg-pink-500 flex-shrink-0" />
                     <span>{item}</span>
                   </li>
                 ))}
               </ul>
-              <div className="text-right text-xs opacity-50">SlideForge.ai Generated</div>
+              <div className={`text-right text-xs opacity-50 ${theme.cssText}`}>HookDeck PRO Generated</div>
             </div>
           )}
 
           {/* 슬라이드 번호 풋터 */}
-          <div className="flex justify-between items-center pt-4 border-t border-slate-700/50 text-xs opacity-60">
+          <div className={`flex justify-between items-center pt-4 border-t border-white/10 text-xs opacity-60 ${theme.cssText}`}>
             <span>{t.confidential}</span>
             <span>{currentIndex + 1} / {slides.length}</span>
           </div>
@@ -175,7 +167,7 @@ export default function SlideViewer({ slides, deckTitle, style, lang }: SlideVie
             onClick={() => setCurrentIndex(idx)}
             className={`flex-shrink-0 w-24 h-14 rounded-lg border text-left p-1.5 transition text-[10px] truncate ${
               currentIndex === idx
-                ? "border-blue-500 ring-2 ring-blue-500/20 bg-blue-950/40 text-blue-300"
+                ? "border-pink-500 ring-2 ring-pink-500/20 bg-pink-950/40 text-pink-300"
                 : "border-slate-800 bg-slate-900 text-slate-400 hover:border-slate-700"
             }`}
           >

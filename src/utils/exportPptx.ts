@@ -1,28 +1,22 @@
 import pptxgen from "pptxgenjs";
 import { DeckResponse, SlideItem } from "@/types/deck";
+import { getThemeById } from "./themes";
 
-export function exportToPPTX(deck: DeckResponse, style: string = 'minimal') {
+export function exportToPPTX(deck: DeckResponse, themeId: string = "dark-tech") {
   const pres = new pptxgen();
   pres.layout = "LAYOUT_16x9";
   pres.title = deck.title;
 
-  const themeColors: Record<string, { bg: string; title: string; text: string; accent: string; cardBg: string }> = {
-    minimal: { bg: "FFFFFF", title: "0F172A", text: "334155", accent: "2563EB", cardBg: "F1F5F9" },
-    corporate: { bg: "0B132B", title: "F8FAFC", text: "CBD5E1", accent: "38BDF8", cardBg: "1C2541" },
-    creative: { bg: "1C1815", title: "F7EEE4", text: "D4C7B8", accent: "F59E0B", cardBg: "2B241E" },
-    dark: { bg: "090D16", title: "FFFFFF", text: "94A3B8", accent: "EC4899", cardBg: "131A2B" },
-  };
-
-  const theme = themeColors[style] || themeColors.dark;
+  const theme = getThemeById(themeId);
 
   deck.slides.forEach((s: SlideItem) => {
     const slide = pres.addSlide();
     slide.background = { color: theme.bg };
 
-    if (s.layout === 'title') {
+    if (s.layout === "title") {
       slide.addText(s.title, {
         x: 1.0,
-        y: 2.3,
+        y: 2.2,
         w: 11.3,
         h: 2.0,
         fontSize: 38,
@@ -33,7 +27,7 @@ export function exportToPPTX(deck: DeckResponse, style: string = 'minimal') {
       if (s.subtitle || s.content[0]) {
         slide.addText(s.subtitle || s.content[0], {
           x: 1.5,
-          y: 4.5,
+          y: 4.4,
           w: 10.3,
           h: 1.0,
           fontSize: 20,
@@ -41,7 +35,7 @@ export function exportToPPTX(deck: DeckResponse, style: string = 'minimal') {
           align: "center",
         });
       }
-    } else if (s.layout === 'metrics' && s.metrics) {
+    } else if (s.layout === "metrics" && s.metrics) {
       slide.addText(s.title, {
         x: 1.0,
         y: 0.8,
