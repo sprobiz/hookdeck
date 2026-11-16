@@ -10,7 +10,7 @@ export function exportToPPTX(deck: DeckResponse, style: string = 'minimal') {
     minimal: { bg: "FFFFFF", title: "0F172A", text: "334155", accent: "2563EB", cardBg: "F1F5F9" },
     corporate: { bg: "0B132B", title: "F8FAFC", text: "CBD5E1", accent: "38BDF8", cardBg: "1C2541" },
     creative: { bg: "1C1815", title: "F7EEE4", text: "D4C7B8", accent: "F59E0B", cardBg: "2B241E" },
-    dark: { bg: "090D16", title: "FFFFFF", text: "94A3B8", accent: "6366F1", cardBg: "131A2B" },
+    dark: { bg: "090D16", title: "FFFFFF", text: "94A3B8", accent: "EC4899", cardBg: "131A2B" },
   };
 
   const theme = themeColors[style] || themeColors.dark;
@@ -122,7 +122,7 @@ export function exportToPPTX(deck: DeckResponse, style: string = 'minimal') {
       });
     }
 
-    slide.addText(`${s.slideNumber} | SlideForge.ai`, {
+    slide.addText(`${s.slideNumber} | HookDeck PRO`, {
       x: 10.5,
       y: 6.8,
       w: 2.3,

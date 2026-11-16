@@ -3,9 +3,9 @@ import "./globals.css";
 import "../../public/output.css";
 
 export const metadata: Metadata = {
-  title: "SlideForge PRO - High-Converting AI Presentation Deck Builder",
+  title: "HookDeck PRO - High-Converting AI Presentation Deck Builder",
   description: "Turn ideas into executive strategic pitch decks in 45s. Native .pptx export, zero-downtime serverless architecture.",
-  keywords: ["AI Slide Deck", "Pitch Deck AI", "Presentation Generator", "PPTX AI", "SlideForge"],
+  keywords: ["AI Slide Deck", "Pitch Deck AI", "Presentation Generator", "PPTX AI", "HookDeck"],
 };
 
 export default function RootLayout({

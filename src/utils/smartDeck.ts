@@ -13,7 +13,7 @@ export function generateSmartDeck(req: DeckRequest): DeckResponse {
         title: userTopic,
         subtitle: "전략적 사업 기획 및 실행 마스터플랜",
         layout: "title",
-        content: ["기획 및 분석: SlideForge PRO", "발표 일자: 2026. 11"],
+        content: ["기획 및 분석: HookDeck PRO", "발표 일자: 2026. 11"],
       },
       {
         id: 2,
@@ -73,7 +73,7 @@ export function generateSmartDeck(req: DeckRequest): DeckResponse {
         content: [
           `'${userTopic}' 프로젝트의 실현 가능성 및 압도적 마진 구조 검증 완료`,
           "즉각적인 실행을 위한 파트너십 구축 및 리소스 배분 진행",
-          "문의 및 제휴: contact@s-probiz.com | Powered by SlideForge PRO",
+          "문의 및 제휴: contact@s-probiz.com | Powered by HookDeck PRO",
         ],
       },
       {
@@ -121,14 +121,14 @@ export function generateSmartDeck(req: DeckRequest): DeckResponse {
         layout: "title",
         content: [
           `감사합니다. '${userTopic}' 발표를 마칩니다.`,
-          "Contact: contact@s-probiz.com | SlideForge.ai",
+          "Contact: contact@s-probiz.com | HookDeck PRO",
         ],
       },
     ];
 
     return {
       title: `${userTopic} 전략 기획서`,
-      description: `SlideForge PRO 엔진으로 기획된 ${userTopic} 프레젠테이션`,
+      description: `HookDeck PRO 엔진으로 기획된 ${userTopic} 프레젠테이션`,
       slides: slides.slice(0, count),
     };
   }
@@ -141,7 +141,7 @@ export function generateSmartDeck(req: DeckRequest): DeckResponse {
       title: userTopic,
       subtitle: "Strategic Masterplan & Execution Roadmap",
       layout: "title",
-      content: ["Architected with SlideForge PRO", "November 2026"],
+      content: ["Architected with HookDeck PRO", "November 2026"],
     },
     {
       id: 2,
@@ -201,7 +201,7 @@ export function generateSmartDeck(req: DeckRequest): DeckResponse {
       content: [
         `Feasibility and unit economics for '${userTopic}' fully validated`,
         "Immediate execution focus on distribution and paying customer acquisition",
-        "Inquiries: contact@s-probiz.com | Powered by SlideForge PRO",
+        "Inquiries: contact@s-probiz.com | Powered by HookDeck PRO",
       ],
     },
     {
@@ -249,7 +249,7 @@ export function generateSmartDeck(req: DeckRequest): DeckResponse {
       layout: "title",
       content: [
         `Thank you for your attention on '${userTopic}'.`,
-        "Contact: contact@s-probiz.com | SlideForge.ai",
+        "Contact: contact@s-probiz.com | HookDeck PRO",
       ],
     },
   ];

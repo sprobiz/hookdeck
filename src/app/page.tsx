@@ -8,7 +8,7 @@ import { DeckResponse } from "@/types/deck";
 import { translations, Language } from "@/utils/translations";
 
 export default function Home() {
-  const [lang, setLang] = useState<Language>("en"); // 글로벌 기본 영문 타깃
+  const [lang, setLang] = useState<Language>("en");
   const [topic, setTopic] = useState("");
   const [slideCount, setSlideCount] = useState(6);
   const [style, setStyle] = useState<"minimal" | "corporate" | "creative" | "dark">("dark");
@@ -78,15 +78,15 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 py-3.5 flex items-center justify-between">
           {/* 브랜드 로고 (HookThumb 스타일 엠블럼 + PRO 뱃지) */}
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-pink-500 p-[1.5px] shadow-lg shadow-blue-500/20">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pink-500 via-rose-500 to-indigo-600 p-[1.5px] shadow-lg shadow-pink-500/20">
               <div className="w-full h-full bg-[#0a0f1d] rounded-2xl flex items-center justify-center font-black text-white text-lg">
                 ⚡
               </div>
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-1.5">
-                <span className="font-black text-white text-lg sm:text-xl tracking-tight">SlideForge</span>
-                <span className="px-1.5 py-0.5 text-[10px] font-black uppercase rounded bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-sm">
+                <span className="font-black text-white text-lg sm:text-xl tracking-tight">HookDeck</span>
+                <span className="px-1.5 py-0.5 text-[10px] font-black uppercase rounded bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-sm">
                   PRO
                 </span>
               </div>
@@ -330,7 +330,7 @@ export default function Home() {
               </ul>
             </div>
 
-            {/* After (SlideForge Way) */}
+            {/* After (HookDeck Way) */}
             <div className="p-8 rounded-3xl bg-gradient-to-b from-blue-950/40 to-slate-900/80 border-2 border-blue-500/50 shadow-xl shadow-blue-500/10">
               <div className="flex items-center gap-2 text-blue-400 font-bold text-lg mb-6">
                 <CheckCircle className="w-5 h-5 text-emerald-400" />
@@ -356,10 +356,10 @@ export default function Home() {
       <footer className="bg-[#05080f] text-slate-500 py-12 px-4 sm:px-6 lg:px-8 border-t border-slate-900 text-xs">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2.5">
-            <div className="w-6 h-6 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-xs">
+            <div className="w-6 h-6 rounded-lg bg-pink-500 flex items-center justify-center text-white font-bold text-xs">
               ⚡
             </div>
-            <span className="font-bold text-slate-300 text-sm">SlideForge.ai</span>
+            <span className="font-bold text-slate-300 text-sm">HookDeck PRO</span>
             <span>{t.footer.rights}</span>
           </div>
 

@@ -3,18 +3,18 @@ export type Language = "en" | "ko";
 export const translations = {
   en: {
     nav: {
-      tagline: "Turn Idea to Deck in 45s",
-      generator: "AI Generator",
+      tagline: "Stop Guessing. Hook & Convert.",
+      generator: "AI Deck Studio",
       templates: "Templates",
       features: "Features",
-      pricing: "Pricing",
+      pricing: "Pricing & Plans",
       upgrade: "Upgrade Plan",
     },
     hero: {
       badge: "Trusted by 10,000+ Founders & Executives Worldwide",
       titleMain: "Generate High-Converting",
       titleHighlight: "Presentation Decks in 45s",
-      desc: "Stop wasting 4+ hours building slides from scratch. Enter any idea, prompt, or topic — our AI instantly architects executive pitch decks and exports native editable .pptx files.",
+      desc: "Stop wasting 4+ hours building slides from scratch. Enter any idea, prompt, or topic — HookDeck AI instantly architects executive pitch decks and exports native editable .pptx files.",
       inputLabel: "Enter your presentation topic, outline, or idea",
       placeholder: "e.g., 2026 B2B AI Agent Market Opportunity, Seed Pitch Deck for YC, or Q3 Enterprise Sales Strategy",
       suggested: "Trending Decks:",
@@ -41,7 +41,7 @@ export const translations = {
     },
     comparison: {
       badge: "The Hard Truth",
-      title: "Why Founders & Executives Are Switching to SlideForge",
+      title: "Why Founders & Executives Are Switching to HookDeck",
       beforeTitle: "Old Way (PowerPoint / Canva)",
       beforePoints: [
         "4 to 6 hours wasted staring at blank slides",
@@ -49,7 +49,7 @@ export const translations = {
         "Endless copy-pasting from ChatGPT notes to slides",
         "Frustrating alignment and design tweaking late at night",
       ],
-      afterTitle: "The SlideForge Way",
+      afterTitle: "The HookDeck Way",
       afterPoints: [
         "1 prompt → Full multi-slide strategic deck in 45 seconds",
         "Executive layout hierarchy, clear metrics & bullet points",
@@ -102,7 +102,7 @@ export const translations = {
       confidential: "Confidential & Proprietary",
     },
     footer: {
-      rights: "© 2026 SlideForge.ai · S-Probiz Inc. All rights reserved.",
+      rights: "© 2026 HookDeck PRO · S-Probiz Inc. All rights reserved.",
       terms: "Terms of Service",
       privacy: "Privacy Policy",
       support: "Support & Contact",
@@ -110,18 +110,18 @@ export const translations = {
   },
   ko: {
     nav: {
-      tagline: "아이디어를 45초 만에 완성형 슬라이드로",
-      generator: "AI 슬라이드 생성기",
+      tagline: "Stop Guessing. Hook & Convert.",
+      generator: "AI 덱 스튜디오",
       templates: "템플릿",
       features: "주요 기능",
-      pricing: "요금제",
+      pricing: "요금제 안내",
       upgrade: "플랜 업그레이드",
     },
     hero: {
       badge: "전 세계 10,000+ 대표 및 실무자가 선택한 AI 덱 빌더",
       titleMain: "아이디어 한 줄로 완성하는",
       titleHighlight: "압도적 고전환 슬라이드 덱 (45초)",
-      desc: "빈 파워포인트 화면을 보며 4시간씩 끙끙 앓던 시대는 끝났습니다. 주제나 개요 한 줄만 입력하면, AI가 목차부터 전략 카피, 핵심 지표까지 완전 기획해 순정 .pptx 파일로 즉시 다운로드해 드립니다.",
+      desc: "빈 파워포인트 화면을 보며 4시간씩 끙끙 앓던 시대는 끝났습니다. 주제나 개요 한 줄만 입력하면, HookDeck AI가 목차부터 전략 카피, 핵심 지표까지 완전 기획해 순정 .pptx 파일로 즉시 다운로드해 드립니다.",
       inputLabel: "발표 주제, 제안서 개요, 또는 핵심 아이디어를 입력하세요",
       placeholder: "예: 2026 생성형 AI B2B 솔루션 시장 진입 전략 및 분기별 매출 로드맵",
       suggested: "추천 슬라이드 주제:",
@@ -148,7 +148,7 @@ export const translations = {
     },
     comparison: {
       badge: "불편한 진실과 해답",
-      title: "왜 전 세계 실무자들은 SlideForge로 전환할까요?",
+      title: "왜 전 세계 실무자들은 HookDeck으로 전환할까요?",
       beforeTitle: "기존의 고통스러운 방식 (수작업 PPT)",
       beforePoints: [
         "새하얀 백지 슬라이드 앞에서 4시간 이상 스트레스와 야근",
@@ -156,7 +156,7 @@ export const translations = {
         "챗GPT 텍스트를 파워포인트로 하나하나 복사-붙여넣기하는 지옥",
         "조잡한 디자인으로 중요한 투자 유치 및 제안 실패",
       ],
-      afterTitle: "SlideForge 혁신 방식",
+      afterTitle: "HookDeck 혁신 방식",
       afterPoints: [
         "주제 1줄 입력 → 45초 만에 완성형 멀티 슬라이드 전략 덱 완성",
         "비즈니스 의사결정자를 사로잡는 타이포그래피 & 핵심 지표 레이아웃",
@@ -209,7 +209,7 @@ export const translations = {
       confidential: "대외비 (Confidential)",
     },
     footer: {
-      rights: "© 2026 SlideForge.ai · S-Probiz Inc. All rights reserved.",
+      rights: "© 2026 HookDeck PRO · S-Probiz Inc. All rights reserved.",
       terms: "이용약관",
       privacy: "개인정보처리방침",
       support: "제휴 및 고객 지원",
