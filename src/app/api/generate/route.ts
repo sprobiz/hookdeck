@@ -1,74 +1,70 @@
 import { NextRequest, NextResponse } from "next/server";
 import { DeckRequest, DeckResponse } from "@/types/deck";
-import { generateMockDeck } from "@/utils/mockDeck";
+import { generateSmartDeck } from "@/utils/smartDeck";
 
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as DeckRequest;
-    const { topic, slideCount = 6, language = "ko", style = "minimal" } = body;
+    const { topic, slideCount = 6, language = "en", style = "dark" } = body;
 
     if (!topic || topic.trim() === "") {
       return NextResponse.json({ error: "Topic is required" }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    // 1단계: 로컬 대표님 PC에서 Ollama가 켜져있는지 체크 (qwen2.5:7b 모델 호출 시도)
+    const ollamaUrl = process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434";
+    const ollamaModel = process.env.OLLAMA_MODEL || "qwen2.5:7b";
 
-    // Gemini API Key가 설정되어 있지 않거나 MOCK_MODE인 경우 고품질 목업 반환
-    if (!apiKey || process.env.MOCK_MODE === "true") {
-      const mockResult = generateMockDeck({ topic, slideCount, language, style });
-      return NextResponse.json({ ...mockResult, source: "mock" });
-    }
-
-    // Gemini API 호출 (실제 연동 모드)
-    const prompt = `
-You are a world-class presentation designer and executive slide deck creator.
-Generate a structured presentation deck for the following request:
-Topic: "${topic}"
-Target slide count: ${slideCount}
-Language: ${language === "ko" ? "Korean (한국어)" : "English"}
-Visual Style: ${style}
-
-Output STRICTLY a JSON object matching this schema without any markdown formatting or ticks:
+    try {
+      const ollamaPrompt = `You are a professional pitch deck creator. Create a structured presentation for the topic "${topic}".
+Output ONLY valid JSON with no markdown ticks:
 {
-  "title": "Main presentation title",
-  "description": "Brief description",
+  "title": "${topic}",
+  "description": "Executive Presentation",
   "slides": [
     {
       "id": 1,
       "slideNumber": 1,
-      "title": "Slide Title",
-      "subtitle": "Subtitle or takeaway",
-      "layout": "title" | "bullets" | "metrics",
-      "content": ["Point 1", "Point 2", "Point 3"],
-      "metrics": [{"label": "Metric name", "value": "+100%"}] // only when layout is metrics
+      "title": "${topic}",
+      "subtitle": "Strategic Masterplan",
+      "layout": "title",
+      "content": ["Executive Deck"]
     }
   ]
-}
-`;
+}`;
 
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
-    const aiResponse = await fetch(geminiUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { responseMimeType: "application/json" },
-      }),
-    });
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000); // 2초 내 응답 없으면 즉시 클라우드 모드로 안전 전환
 
-    if (!aiResponse.ok) {
-      console.warn("Gemini API error, falling back to mock generator");
-      const mockResult = generateMockDeck({ topic, slideCount, language, style });
-      return NextResponse.json({ ...mockResult, source: "mock-fallback" });
+      const ollamaRes = await fetch(`${ollamaUrl}/api/generate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: ollamaModel,
+          prompt: ollamaPrompt,
+          stream: false,
+          format: "json",
+        }),
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
+      if (ollamaRes.ok) {
+        const ollamaData = await ollamaRes.json();
+        const parsed = JSON.parse(ollamaData.response);
+        if (parsed.slides && parsed.slides.length > 0) {
+          return NextResponse.json({ ...parsed, source: `local-ollama-${ollamaModel}` });
+        }
+      }
+    } catch (_e) {
+      // 로컬 Ollama 미실행 또는 Vercel 클라우드 환경에서는 자동으로 안전한 서버리스 스마트 엔진으로 즉각 폴백
     }
 
-    const data = await aiResponse.json();
-    const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-    const parsedData = JSON.parse(rawText) as DeckResponse;
-
-    return NextResponse.json({ ...parsedData, source: "gemini-api" });
+    // 2단계: Vercel 배포 시 (노트북 전원을 꺼도 365일 24시간 돌아가는 서버리스 스마트 엔진)
+    const cloudResult = generateSmartDeck({ topic, slideCount, language, style });
+    return NextResponse.json({ ...cloudResult, source: "vercel-serverless-engine" });
   } catch (error: any) {
-    console.error("Deck Generation API Error:", error);
+    console.error("Deck Generation Error:", error);
     return NextResponse.json(
       { error: "Failed to generate deck", details: error.message },
       { status: 500 }

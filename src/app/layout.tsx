@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "../../public/output.css";
 
 export const metadata: Metadata = {
   title: "SlideForge PRO - High-Converting AI Presentation Deck Builder",
@@ -14,6 +15,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
+      <head>
+        <link rel="stylesheet" href="/output.css" />
+      </head>
       <body className="antialiased bg-[#070b14] text-slate-100">{children}</body>
     </html>
   );
