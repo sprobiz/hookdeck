@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { SlideItem } from "@/types/deck";
-import { ChevronLeft, ChevronRight, Download, Sparkles, Copy, Check } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, Sparkles, Copy, Check, Lock, ArrowDown } from "lucide-react";
 import { exportToPPTX } from "@/utils/exportPptx";
 import { translations, Language } from "@/utils/translations";
 import { getThemeById } from "@/utils/themes";
@@ -17,6 +17,7 @@ interface SlideViewerProps {
 export default function SlideViewer({ slides, deckTitle, themeId, lang }: SlideViewerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
   const t = translations[lang].viewer;
   const theme = getThemeById(themeId);
 
@@ -31,8 +32,65 @@ export default function SlideViewer({ slides, deckTitle, themeId, lang }: SlideV
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleDownloadClick = () => {
+    // 100% 유료 전환 모달 락 가동
+    setShowPaywall(true);
+  };
+
+  const scrollToPricing = () => {
+    setShowPaywall(false);
+    const pricingElem = document.getElementById("pricing");
+    if (pricingElem) {
+      pricingElem.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <div className="w-full max-w-4xl mx-auto my-8">
+      {/* 100% 유료 전환 페이월 모달 */}
+      {showPaywall && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-lg p-8 rounded-3xl bg-slate-900 border-2 border-pink-500/50 shadow-2xl shadow-pink-500/20 text-center">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-tr from-pink-500 to-rose-600 flex items-center justify-center text-white shadow-lg shadow-pink-500/30">
+              <Lock className="w-8 h-8" />
+            </div>
+
+            <span className="px-3 py-1 text-xs font-bold uppercase rounded-full bg-pink-500/20 text-pink-400 border border-pink-500/30">
+              {lang === "ko" ? "PRO 멤버십 전용 기능" : "PRO MEMBERSHIP EXCLUSIVE"}
+            </span>
+
+            <h3 className="mt-4 text-2xl font-black text-white">
+              {lang === "ko"
+                ? "순정 .pptx 파일 다운로드는 유료 플랜 전용입니다"
+                : "Native .pptx Export is a PRO Feature"}
+            </h3>
+
+            <p className="mt-3 text-sm text-slate-300 leading-relaxed">
+              {lang === "ko"
+                ? "빈 슬라이드 앞에서 4시간씩 고통받지 마세요. 지금 Pro 플랜을 구독하시면 20+ 프리미엄 테마와 순정 .pptx 원본 다운로드를 즉시 이용하실 수 있습니다."
+                : "Stop wasting 4+ hours on blank slides. Upgrade to Pro now to unlock unlimited 20+ Executive Themes and 1-click editable .pptx downloads."}
+            </p>
+
+            <div className="mt-8 flex flex-col gap-3">
+              <button
+                onClick={scrollToPricing}
+                className="w-full py-3.5 px-6 rounded-xl font-black text-white bg-gradient-to-r from-rose-500 via-pink-500 to-red-500 hover:opacity-95 shadow-xl shadow-pink-500/30 transition flex items-center justify-center gap-2"
+              >
+                <span>{lang === "ko" ? "요금제 확인하고 즉시 잠금 해제" : "Unlock Now with PayPal"}</span>
+                <ArrowDown className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={() => setShowPaywall(false)}
+                className="text-xs text-slate-400 hover:text-slate-200 transition py-1"
+              >
+                {lang === "ko" ? "미리보기 계속 확인하기" : "Continue Previewing Deck"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 툴바 */}
       <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 mb-4 bg-slate-900/90 backdrop-blur border border-slate-800 rounded-2xl shadow-xl">
         <div className="flex items-center gap-2">
@@ -57,10 +115,10 @@ export default function SlideViewer({ slides, deckTitle, themeId, lang }: SlideV
             {copied ? t.copied : t.copyText}
           </button>
           <button
-            onClick={() => exportToPPTX({ title: deckTitle, description: "", slides }, themeId)}
+            onClick={handleDownloadClick}
             className="flex items-center gap-1.5 px-4 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-pink-500 to-rose-500 hover:opacity-95 rounded-lg shadow-md shadow-pink-500/20 transition"
           >
-            <Download className="w-3.5 h-3.5" />
+            <Lock className="w-3.5 h-3.5" />
             {t.downloadPptx}
           </button>
         </div>
