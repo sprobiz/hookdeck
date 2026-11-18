@@ -217,6 +217,8 @@ export default function Home() {
                   <option value={6}>6 Slides (Executive Standard)</option>
                   <option value={8}>8 Slides (Deep Dive Business)</option>
                   <option value={10}>10 Slides (Full Pitch/IR Deck)</option>
+                  <option value={15}>15 Slides (Strategic Master Proposal)</option>
+                  <option value={20}>20 Slides (Enterprise Full Master Deck)</option>
                 </select>
               </div>
 
