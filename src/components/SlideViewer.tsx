@@ -80,6 +80,17 @@ export default function SlideViewer({ slides, deckTitle, themeId, lang }: SlideV
                 <ArrowDown className="w-4 h-4" />
               </button>
 
+              {/* 대표님 전용 관리자 원클릭 테스트 다운로드 버튼 */}
+              <button
+                onClick={() => {
+                  setShowPaywall(false);
+                  exportToPPTX({ title: deckTitle, description: "", slides }, themeId);
+                }}
+                className="text-xs text-pink-400/80 hover:text-pink-300 underline font-semibold transition py-1"
+              >
+                [Admin Test: Download .pptx directly]
+              </button>
+
               <button
                 onClick={() => setShowPaywall(false)}
                 className="text-xs text-slate-400 hover:text-slate-200 transition py-1"
