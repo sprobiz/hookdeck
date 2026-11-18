@@ -4,6 +4,7 @@ import { getThemeById } from "./themes";
 
 export function exportToPPTX(deck: DeckResponse, themeId: string = "dark-tech") {
   const pres = new pptxgen();
+  // 표준 16:9 슬라이드 너비 13.333인치, 높이 7.5인치
   pres.layout = "LAYOUT_16x9";
   pres.title = deck.title;
 
@@ -16,9 +17,9 @@ export function exportToPPTX(deck: DeckResponse, themeId: string = "dark-tech") 
     if (s.layout === "title") {
       // 상단 브랜드 로고/태그
       slide.addText("HOOKDECK PRO EXECUTIVE DECK", {
-        x: 1.0,
-        y: 1.6,
-        w: 11.3,
+        x: 1.5,
+        y: 1.5,
+        w: 10.33,
         h: 0.4,
         fontSize: 12,
         bold: true,
@@ -27,77 +28,83 @@ export function exportToPPTX(deck: DeckResponse, themeId: string = "dark-tech") 
         charSpacing: 3,
       });
 
-      // 메인 타이틀 (줄바꿈 및 가독성 최적화)
+      // 메인 타이틀 (너비 10.33인치, 자동 줄바꿈, 폰트 30pt로 슬라이드 밖으로 안 잘리게 완벽 중앙 정렬)
       slide.addText(s.title, {
-        x: 1.0,
+        x: 1.5,
         y: 2.2,
-        w: 11.3,
-        h: 2.2,
-        fontSize: 34,
+        w: 10.33,
+        h: 2.4,
+        fontSize: 30,
         bold: true,
         color: theme.title,
         align: "center",
         valign: "middle",
+        wrap: true,
       });
 
       // 서브타이틀
       if (s.subtitle || s.content[0]) {
         slide.addText(s.subtitle || s.content[0], {
           x: 1.5,
-          y: 4.6,
-          w: 10.3,
+          y: 4.8,
+          w: 10.33,
           h: 0.8,
           fontSize: 18,
           color: theme.accent,
           align: "center",
+          valign: "top",
+          wrap: true,
         });
       }
 
-      // 하단 메타정보
+      // 하단 대외비 표기
       slide.addText("CONFIDENTIAL & PROPRIETARY", {
-        x: 1.0,
+        x: 1.5,
         y: 6.2,
-        w: 11.3,
+        w: 10.33,
         h: 0.4,
         fontSize: 10,
         color: "64748B",
         align: "center",
       });
     } else if (s.layout === "metrics" && s.metrics) {
-      // 슬라이드 헤더
+      // 슬라이드 헤더 (폰트 30pt로 시원하게 확대)
       slide.addText(s.title, {
-        x: 1.0,
-        y: 0.7,
-        w: 11.3,
+        x: 1.2,
+        y: 0.8,
+        w: 10.9,
         h: 0.7,
-        fontSize: 26,
+        fontSize: 30,
         bold: true,
         color: theme.title,
+        wrap: true,
       });
 
       if (s.subtitle) {
         slide.addText(s.subtitle, {
-          x: 1.0,
-          y: 1.4,
-          w: 11.3,
+          x: 1.2,
+          y: 1.5,
+          w: 10.9,
           h: 0.4,
-          fontSize: 14,
+          fontSize: 15,
           italic: true,
           color: theme.accent,
+          wrap: true,
         });
       }
 
-      // KPI 카드 3개 균형 배치 (중앙 정렬)
-      const cardWidth = 3.5;
+      // KPI 카드 3개 균형 배치 (중앙 정렬 및 시원한 크기)
+      const cardWidth = 3.3;
       const cardHeight = 3.6;
-      const cardGap = 0.4;
-      const startX = (13.333 - (3 * cardWidth + 2 * cardGap)) / 2; // 16:9 와이드 중앙 자동 계산
+      const cardGap = 0.5;
+      const totalCardsWidth = 3 * cardWidth + 2 * cardGap;
+      const startX = (13.333 - totalCardsWidth) / 2; // 정확한 16:9 정중앙
 
       s.metrics.slice(0, 3).forEach((m, idx) => {
         const xPos = startX + idx * (cardWidth + cardGap);
         const yPos = 2.2;
 
-        // 배경 카드
+        // 배경 카드 사각형
         slide.addShape(pres.ShapeType.rect, {
           x: xPos,
           y: yPos,
@@ -108,77 +115,82 @@ export function exportToPPTX(deck: DeckResponse, themeId: string = "dark-tech") 
           rectRadius: 0.1,
         });
 
-        // KPI 숫자값
+        // KPI 숫자값 (대문짝만하게 40pt)
         slide.addText(m.value, {
-          x: xPos + 0.2,
+          x: xPos + 0.1,
           y: yPos + 0.6,
-          w: cardWidth - 0.4,
+          w: cardWidth - 0.2,
           h: 1.2,
-          fontSize: 34,
+          fontSize: 38,
           bold: true,
           color: theme.accent,
           align: "center",
           valign: "middle",
         });
 
-        // KPI 레이블
+        // KPI 레이블 (16pt 볼드)
         slide.addText(m.label, {
-          x: xPos + 0.2,
+          x: xPos + 0.1,
           y: yPos + 2.0,
-          w: cardWidth - 0.4,
-          h: 0.8,
-          fontSize: 15,
+          w: cardWidth - 0.2,
+          h: 1.0,
+          fontSize: 16,
           bold: true,
           color: theme.text,
           align: "center",
           valign: "middle",
+          wrap: true,
         });
       });
     } else {
       // 일반 본문 슬라이드
       slide.addText(s.title, {
-        x: 1.0,
-        y: 0.7,
-        w: 11.3,
+        x: 1.2,
+        y: 0.8,
+        w: 10.9,
         h: 0.7,
-        fontSize: 26,
+        fontSize: 30,
         bold: true,
         color: theme.title,
+        wrap: true,
       });
 
       if (s.subtitle) {
         slide.addText(s.subtitle, {
-          x: 1.0,
-          y: 1.4,
-          w: 11.3,
+          x: 1.2,
+          y: 1.5,
+          w: 10.9,
           h: 0.4,
-          fontSize: 14,
+          fontSize: 15,
           italic: true,
           color: theme.accent,
+          wrap: true,
         });
       }
 
-      // 본문 불릿 포인트 카드형 박스 및 여백
-      const bulletY = s.subtitle ? 2.1 : 1.8;
+      // 본문 불릿 포인트 (폰트 20pt로 시원하게 키우고 줄바꿈 간격 확보)
+      const bulletY = s.subtitle ? 2.2 : 1.9;
       const bulletItems = s.content.map((c) => ({
         text: c,
-        options: { fontSize: 16, color: theme.text, bullet: true, spaceAfter: 16, lineSpacingMultiple: 1.2 },
+        options: { fontSize: 20, color: theme.text, bullet: true, spaceAfter: 20, lineSpacingMultiple: 1.25 },
       }));
 
       slide.addText(bulletItems, {
-        x: 1.0,
+        x: 1.2,
         y: bulletY,
-        w: 11.3,
-        h: 4.4,
+        w: 10.9,
+        h: 4.5,
         valign: "top",
+        wrap: true,
       });
     }
 
+    // 슬라이드 번호 풋터
     slide.addText(`${s.slideNumber} | HookDeck PRO`, {
       x: 10.5,
-      y: 6.8,
+      y: 6.9,
       w: 2.3,
-      h: 0.4,
+      h: 0.3,
       fontSize: 10,
       color: "64748B",
       align: "right",
