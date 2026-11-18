@@ -68,7 +68,7 @@ export const translations = {
       starterFeatures: [
         "Up to 20 decks / month (200 slides)",
         "Instant 1-Click .pptx PowerPoint download",
-        "3 Clean business themes",
+        "5 Essential Business themes",
         "Standard AI processing priority",
         "Full commercial usage rights",
       ],
@@ -77,7 +77,7 @@ export const translations = {
       proFeatures: [
         "Up to 60 decks / month (600 slides)",
         "Unlimited native .pptx PowerPoint exports",
-        "All 4 Executive themes (Dark Tech, Minimal, Navy)",
+        "All 20+ Executive Pro themes (Tech, Luxury, Corporate, Nature)",
         "Automatic KPI & Metrics visualization blocks",
         "Ultra-fast VIP Gemini Flash pipeline",
         "Priority 24/7 customer support",
@@ -86,6 +86,7 @@ export const translations = {
       agencyDesc: "For client agencies & multi-deck power users",
       agencyFeatures: [
         "Unlimited deck generation",
+        "All 20+ Executive themes + Custom palette option",
         "5 Team member seats",
         "Custom brand color & watermark removal",
         "Dedicated VIP processing slot",
@@ -175,7 +176,7 @@ export const translations = {
       starterFeatures: [
         "월 최대 20개 슬라이드 덱 생성 (200장)",
         "클릭 1초 순정 .pptx 파워포인트 파일 다운로드",
-        "기본 비즈니스 테마 3종 제공",
+        "핵심 비즈니스 테마 5종 기본 제공",
         "표준 속도 AI 처리 큐",
         "상업적 이용 라이선스 완전 포함",
       ],
@@ -184,7 +185,7 @@ export const translations = {
       proFeatures: [
         "월 최대 60개 슬라이드 덱 생성 (600장 여유 한도)",
         "무제한 순정 .pptx 파워포인트 파일 다운로드",
-        "다크 테크 / 코퍼레이트 등 4대 프리미엄 테마",
+        "20+ 프리미엄 익스큐티브 테마 전종 완전 개방",
         "핵심 지표(KPI Metrics) 자동 시각화 레이아웃",
         "초고속 VIP 전용 AI 생성 파이프라인",
         "24시간 우선 고객 지원",
@@ -193,6 +194,7 @@ export const translations = {
       agencyDesc: "다수의 고객 제안서를 납품하는 외주사 및 전문 에이전시",
       agencyFeatures: [
         "무제한(Unlimited) 슬라이드 덱 생성",
+        "20+ 프리미엄 테마 및 커스텀 브랜드 팔레트",
         "팀원 최대 5인 계정 동시 사용",
         "커스텀 브랜드 컬러 지정 및 워터마크 완전 제거",
         "최우선 전용 GPU 슬롯 배정",
