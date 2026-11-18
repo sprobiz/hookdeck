@@ -16,24 +16,24 @@ export function exportToPPTX(deck: DeckResponse, themeId: string = "dark-tech") 
 
     if (s.layout === "title") {
       // 상단 브랜드 로고/태그
-      slide.addText("HOOKDECK PRO EXECUTIVE DECK", {
-        x: 1.5,
-        y: 1.5,
-        w: 10.33,
+      slide.addText("HOOKDECK PRO", {
+        x: 2.0,
+        y: 1.2,
+        w: 9.33,
         h: 0.4,
-        fontSize: 12,
+        fontSize: 13,
         bold: true,
         color: theme.accent,
         align: "center",
       });
 
-      // 메인 타이틀 (너비 10.33인치, 자동 줄바꿈, 폰트 30pt로 슬라이드 밖으로 안 잘리게 완벽 중앙 정렬)
+      // 메인 타이틀: 너비를 8.5인치로 좁혀서 웹 화면처럼 2~3줄로 웅장하게 자동 줄바꿈되도록 완벽 중앙 배치
       slide.addText(s.title, {
-        x: 1.5,
-        y: 2.2,
-        w: 10.33,
-        h: 2.4,
-        fontSize: 30,
+        x: 2.0,
+        y: 1.8,
+        w: 9.33,
+        h: 2.8,
+        fontSize: 34,
         bold: true,
         color: theme.title,
         align: "center",
@@ -44,11 +44,12 @@ export function exportToPPTX(deck: DeckResponse, themeId: string = "dark-tech") 
       // 서브타이틀
       if (s.subtitle || s.content[0]) {
         slide.addText(s.subtitle || s.content[0], {
-          x: 1.5,
+          x: 2.0,
           y: 4.8,
-          w: 10.33,
+          w: 9.33,
           h: 0.8,
           fontSize: 18,
+          bold: true,
           color: theme.accent,
           align: "center",
           valign: "top",
@@ -56,15 +57,25 @@ export function exportToPPTX(deck: DeckResponse, themeId: string = "dark-tech") 
         });
       }
 
-      // 하단 대외비 표기
-      slide.addText("CONFIDENTIAL & PROPRIETARY", {
-        x: 1.5,
-        y: 6.2,
-        w: 10.33,
+      // 하단 일자 및 메타정보
+      slide.addText("Architected with HookDeck PRO", {
+        x: 2.0,
+        y: 5.8,
+        w: 9.33,
         h: 0.4,
+        fontSize: 11,
+        color: "94A3B8",
+        align: "center",
+      });
+
+      slide.addText("Confidential & Proprietary", {
+        x: 1.0,
+        y: 6.8,
+        w: 5.0,
+        h: 0.3,
         fontSize: 10,
         color: "64748B",
-        align: "center",
+        align: "left",
       });
     } else if (s.layout === "metrics" && s.metrics) {
       // 슬라이드 헤더 (폰트 30pt로 시원하게 확대)
