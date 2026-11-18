@@ -25,7 +25,6 @@ export function exportToPPTX(deck: DeckResponse, themeId: string = "dark-tech") 
         bold: true,
         color: theme.accent,
         align: "center",
-        charSpacing: 3,
       });
 
       // 메인 타이틀 (너비 10.33인치, 자동 줄바꿈, 폰트 30pt로 슬라이드 밖으로 안 잘리게 완벽 중앙 정렬)
@@ -112,7 +111,6 @@ export function exportToPPTX(deck: DeckResponse, themeId: string = "dark-tech") 
           h: cardHeight,
           fill: { color: theme.cardBg },
           line: { color: theme.accent, width: 1.5 },
-          rectRadius: 0.1,
         });
 
         // KPI 숫자값 (대문짝만하게 40pt)
@@ -168,11 +166,11 @@ export function exportToPPTX(deck: DeckResponse, themeId: string = "dark-tech") 
         });
       }
 
-      // 본문 불릿 포인트 (폰트 20pt로 시원하게 키우고 줄바꿈 간격 확보)
+      // 본문 불릿 포인트
       const bulletY = s.subtitle ? 2.2 : 1.9;
       const bulletItems = s.content.map((c) => ({
         text: c,
-        options: { fontSize: 20, color: theme.text, bullet: true, spaceAfter: 20, lineSpacingMultiple: 1.25 },
+        options: { fontSize: 18, color: theme.text, bullet: true, spaceAfter: 16 },
       }));
 
       slide.addText(bulletItems, {
@@ -181,7 +179,6 @@ export function exportToPPTX(deck: DeckResponse, themeId: string = "dark-tech") 
         w: 10.9,
         h: 4.5,
         valign: "top",
-        wrap: true,
       });
     }
 
