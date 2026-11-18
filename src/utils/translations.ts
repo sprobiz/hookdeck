@@ -70,6 +70,7 @@ export const translations = {
         "Instant 1-Click .pptx PowerPoint download",
         "5 Essential Business themes",
         "Standard AI processing priority",
+        "HookDeck watermark included",
         "Full commercial usage rights",
       ],
       proName: "Pro (Recommended)",
@@ -77,6 +78,7 @@ export const translations = {
       proFeatures: [
         "Up to 60 decks / month (600 slides)",
         "Unlimited native .pptx PowerPoint exports",
+        "100% Clean Exports (NO Watermark)",
         "All 20+ Executive Pro themes (Tech, Luxury, Corporate, Nature)",
         "Automatic KPI & Metrics visualization blocks",
         "Ultra-fast VIP Gemini Flash pipeline",
@@ -86,9 +88,9 @@ export const translations = {
       agencyDesc: "For client agencies & multi-deck power users",
       agencyFeatures: [
         "Unlimited deck generation",
+        "100% White-Label (Zero watermark + Custom branding)",
         "All 20+ Executive themes + Custom palette option",
         "5 Team member seats",
-        "Custom brand color & watermark removal",
         "Dedicated VIP processing slot",
         "1-on-1 priority onboarding",
       ],
@@ -178,6 +180,7 @@ export const translations = {
         "클릭 1초 순정 .pptx 파워포인트 파일 다운로드",
         "핵심 비즈니스 테마 5종 기본 제공",
         "표준 속도 AI 처리 큐",
+        "HookDeck 기본 워터마크 포함",
         "상업적 이용 라이선스 완전 포함",
       ],
       proName: "Pro (추천 주력)",
@@ -185,6 +188,7 @@ export const translations = {
       proFeatures: [
         "월 최대 60개 슬라이드 덱 생성 (600장 여유 한도)",
         "무제한 순정 .pptx 파워포인트 파일 다운로드",
+        "워터마크 완전 제거 (100% 클린 슬라이드)",
         "20+ 프리미엄 익스큐티브 테마 전종 완전 개방",
         "핵심 지표(KPI Metrics) 자동 시각화 레이아웃",
         "초고속 VIP 전용 AI 생성 파이프라인",
@@ -194,9 +198,9 @@ export const translations = {
       agencyDesc: "다수의 고객 제안서를 납품하는 외주사 및 전문 에이전시",
       agencyFeatures: [
         "무제한(Unlimited) 슬라이드 덱 생성",
+        "100% 화이트라벨 (워터마크 제거 + 고객사 커스텀 로고)",
         "20+ 프리미엄 테마 및 커스텀 브랜드 팔레트",
         "팀원 최대 5인 계정 동시 사용",
-        "커스텀 브랜드 컬러 지정 및 워터마크 완전 제거",
         "최우선 전용 GPU 슬롯 배정",
         "1:1 온보딩 및 전담 지원",
       ],
