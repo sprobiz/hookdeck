@@ -1,26 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
-import { DeckRequest, DeckResponse } from "@/types/deck";
+import { DeckRequest } from "@/types/deck";
 import { generateSmartDeck } from "@/utils/smartDeck";
 
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as DeckRequest;
-    const { topic, slideCount = 6, language = "en", style = "dark" } = body;
+    const {
+      topic,
+      slideCount = 6,
+      language = "en",
+      style = "dark-tech",
+      frameworkId = "auto",
+      customInstructions = "",
+      duration = 5,
+    } = body;
 
     if (!topic || topic.trim() === "") {
       return NextResponse.json({ error: "Topic is required" }, { status: 400 });
     }
 
-    // 1단계: 로컬 대표님 PC에서 Ollama가 켜져있는지 체크 (qwen2.5:7b 모델 호출 시도)
+    // 1단계: 로컬 대표님 PC에서 Ollama qwen2.5가 실행 중인지 체크 (있으면 최우선 활용)
     const ollamaUrl = process.env.OLLAMA_BASE_URL || "http://127.0.0.1:11434";
     const ollamaModel = process.env.OLLAMA_MODEL || "qwen2.5:7b";
 
     try {
-      const ollamaPrompt = `You are a professional pitch deck creator. Create a structured presentation for the topic "${topic}".
+      const ollamaPrompt = `You are a world-class executive pitch deck creator. Create a structured presentation for the topic "${topic}".
+Instructions: ${customInstructions || "Professional structure with clear KPIs and speaker notes"}
+Target slide count: ${slideCount}. Language: ${language}.
 Output ONLY valid JSON with no markdown ticks:
 {
   "title": "${topic}",
   "description": "Executive Presentation",
+  "frameworkId": "${frameworkId}",
   "slides": [
     {
       "id": 1,
@@ -28,13 +39,14 @@ Output ONLY valid JSON with no markdown ticks:
       "title": "${topic}",
       "subtitle": "Strategic Masterplan",
       "layout": "title",
-      "content": ["Executive Deck"]
+      "content": ["Executive Presentation"],
+      "speakerNotes": "Welcome everyone. Today we present our strategic masterplan."
     }
   ]
 }`;
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2000); // 2초 내 응답 없으면 즉시 클라우드 모드로 안전 전환
+      const timeoutId = setTimeout(() => controller.abort(), 2000); // 2초 타임아웃
 
       const ollamaRes = await fetch(`${ollamaUrl}/api/generate`, {
         method: "POST",
@@ -57,12 +69,21 @@ Output ONLY valid JSON with no markdown ticks:
         }
       }
     } catch (_e) {
-      // 로컬 Ollama 미실행 또는 Vercel 클라우드 환경에서는 자동으로 안전한 서버리스 스마트 엔진으로 즉각 폴백
+      // 로컬 Ollama 미실행 또는 Vercel 클라우드에서는 초고속 20대 프레임워크 스마트 엔진으로 안전 전환
     }
 
-    // 2단계: Vercel 배포 시 (노트북 전원을 꺼도 365일 24시간 돌아가는 서버리스 스마트 엔진)
-    const cloudResult = generateSmartDeck({ topic, slideCount, language, style });
-    return NextResponse.json({ ...cloudResult, source: "vercel-serverless-engine" });
+    // 2단계: 20대 특화 프레임워크 & 커스텀 지시사항을 반영하는 스마트 엔진 가동
+    const cloudResult = generateSmartDeck({
+      topic,
+      slideCount,
+      language,
+      style,
+      frameworkId,
+      customInstructions,
+      duration,
+    });
+
+    return NextResponse.json({ ...cloudResult, source: "hookdeck-smart-framework-engine" });
   } catch (error: any) {
     console.error("Deck Generation Error:", error);
     return NextResponse.json(

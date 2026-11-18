@@ -10,11 +10,15 @@ export function exportToPPTX(deck: DeckResponse, themeId: string = "dark-tech") 
 
   const theme = getThemeById(themeId);
   const slideW = 10.0;
-  const slideH = 5.625;
 
   deck.slides.forEach((s: SlideItem) => {
     const slide = pres.addSlide();
     slide.background = { color: theme.bg };
+
+    // 🎙️ 파워포인트 원본 비고란(Speaker Notes)에 1분 발표 대본 자동 삽입!
+    if (s.speakerNotes) {
+      slide.addNotes(s.speakerNotes);
+    }
 
     if (s.layout === "title") {
       // 상단 브랜드 로고/태그
@@ -79,7 +83,7 @@ export function exportToPPTX(deck: DeckResponse, themeId: string = "dark-tech") 
         color: "64748B",
         align: "left",
       });
-    } else if (s.layout === "metrics" && s.metrics) {
+    } else if (s.layout === "metrics" && s.metrics && s.metrics.length > 0) {
       // 슬라이드 헤더
       slide.addText(s.title, {
         x: 0.8,

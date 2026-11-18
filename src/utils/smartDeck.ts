@@ -1,506 +1,316 @@
 import { DeckRequest, DeckResponse, SlideItem } from "@/types/deck";
+import { getFrameworkById, detectFrameworkByTopic, FRAMEWORKS_LIST } from "./frameworks";
 
 export function generateSmartDeck(req: DeckRequest): DeckResponse {
   const isKo = req.language === "ko";
-  const count = req.slideCount || 6;
   const userTopic = req.topic.trim();
+  const customInstr = req.customInstructions?.trim() || "";
 
-  if (isKo) {
-    const slides: SlideItem[] = [
-      {
-        id: 1,
-        slideNumber: 1,
-        title: userTopic,
-        subtitle: "전략적 사업 기획 및 실행 마스터플랜",
-        layout: "title",
-        content: ["기획 및 분석: HookDeck PRO", "발표 일자: 2026. 11"],
-      },
-      {
-        id: 2,
-        slideNumber: 2,
-        title: "1. 시장 기회 및 핵심 과제 분석",
-        subtitle: `Market Opportunity for "${userTopic}"`,
-        layout: "bullets",
-        content: [
-          `'${userTopic}' 분야의 폭발적인 시장 수요 급증 및 니즈 다변화`,
-          "기존 솔루션의 높은 비용 구조와 느린 실행 속도로 인한 시장 진입 장벽",
-          "경량화된 디지털 자동화 솔루션 도입을 통한 초기 시장 선점 기회",
-        ],
-      },
-      {
-        id: 3,
-        slideNumber: 3,
-        title: "2. 기대 성과 및 핵심 목표 지표 (KPI)",
-        subtitle: "Key Performance Indicators",
-        layout: "metrics",
-        content: [],
-        metrics: [
-          { label: "업무 생산성 향상", value: "+380%" },
-          { label: "운영 비용 절감율", value: "85%" },
-          { label: "목표 손익분기점", value: "3개월 내" },
-        ],
-      },
-      {
-        id: 4,
-        slideNumber: 4,
-        title: "3. 차별화 전략 및 비즈니스 모델",
-        subtitle: "Unique Value Proposition & Moat",
-        layout: "bullets",
-        content: [
-          "경쟁사 대비 10배 빠른 Time-to-Value(가치 제공 소요시간) 구현",
-          "초저비용 고효율 구조 설계를 통한 보수적 안전마진 85% 이상 확보",
-          "글로벌(PayPal/카드) 결제 기반 확장성 및 클라우드 무중단 24시간 가동",
-        ],
-      },
-      {
-        id: 5,
-        slideNumber: 5,
-        title: "4. 단계별 실행 로드맵 (Action Plan)",
-        subtitle: "Execution & Scaling Milestones",
-        layout: "bullets",
-        content: [
-          "Phase 1: 핵심 타깃 고객 100명 온보딩 및 빠른 시장 피드백 수렴",
-          "Phase 2: 전환율 극대화 마케팅 파이프라인 가동 및 정기 구독 유치",
-          "Phase 3: B2B 제휴 및 글로벌 시장 확장 가속화",
-        ],
-      },
-      {
-        id: 6,
-        slideNumber: 6,
-        title: "5. 결론 및 향후 계획 (Next Steps)",
-        subtitle: "Summary & Action Items",
-        layout: "bullets",
-        content: [
-          `'${userTopic}' 프로젝트의 실현 가능성 및 압도적 마진 구조 검증 완료`,
-          "즉각적인 실행을 위한 파트너십 구축 및 리소스 배분 진행",
-          "문의 및 제휴: contact@s-probiz.com | Powered by HookDeck PRO",
-        ],
-      },
-      {
-        id: 7,
-        slideNumber: 7,
-        title: "6. 재무 추정 및 예상 수익성",
-        subtitle: "Financial Projections",
-        layout: "metrics",
-        content: [],
-        metrics: [
-          { label: "1차년도 예상 MRR", value: "$30K+" },
-          { label: "목표 영업이익률", value: "85%" },
-          { label: "고객 생애 가치(LTV)", value: "$450" },
-        ],
-      },
-      {
-        id: 8,
-        slideNumber: 8,
-        title: "7. 리스크 관리 및 대응 방안",
-        subtitle: "Risk Mitigation Strategy",
-        layout: "bullets",
-        content: [
-          "기술 의존도 리스크: 멀티 벤더 및 서버리스 엣지 아키텍처로 무중단 운영",
-          "마케팅 리스크: 고전환 랜딩페이지 및 오가닉 바이럴 루프 구축",
-          "규제/결제 리스크: 글로벌 공식 표준 결제(PayPal) 단일 체제로 안전성 확보",
-        ],
-      },
-      {
-        id: 9,
-        slideNumber: 9,
-        title: "8. 조직 역량 및 실행 체계",
-        subtitle: "Team & Execution Capabilities",
-        layout: "bullets",
-        content: [
-          "기획-개발-배포-마케팅 원스톱 실행 능력을 갖춘 린(Lean) 1인 법인 모델",
-          "초기 고정비 제로화 원칙을 통한 철저한 흑자 경영 유지",
-          "데이터 기반 빠른 A/B 테스트 및 주간 단위 기능 고도화",
-        ],
-      },
-      {
-        id: 10,
-        slideNumber: 10,
-        title: "9. 시장 진입 전략 (GTM Strategy)",
-        subtitle: "Go-To-Market & Growth Loops",
-        layout: "bullets",
-        content: [
-          "얼리어답터 타겟팅: B2B 커뮤니티 및 업계 버티컬 플랫폼 중심 침투",
-          "콘텐츠 바이럴 엔진: 슬라이드 템플릿 무료 공개를 통한 오가닉 리드 획득",
-          "파트너십 채널: 에이전시 및 전문 컨설팅 펌과의 전략적 제휴 확대",
-        ],
-      },
-      {
-        id: 11,
-        slideNumber: 11,
-        title: "10. 고객 획득 비용(CAC) 및 LTV 최적화",
-        subtitle: "Unit Economics Scaling",
-        layout: "metrics",
-        content: [],
-        metrics: [
-          { label: "Payback Period", value: "< 2 Mo" },
-          { label: "LTV / CAC Ratio", value: "4.8x" },
-          { label: "Monthly Churn", value: "< 2.1%" },
-        ],
-      },
-      {
-        id: 12,
-        slideNumber: 12,
-        title: "11. 제품 아키텍처 및 기술적 해자",
-        subtitle: "Technical Moat & IP Defense",
-        layout: "bullets",
-        content: [
-          "제로 고정비 서버리스 아키텍처로 경쟁사 대비 1/10 수준의 운영 원가 달성",
-          "자체 템플릿 렌더링 엔진 구축으로 외부 의존성 차단",
-          "데이터 보안 및 엔터프라이즈 컴플라이언스 기준 충족",
-        ],
-      },
-      {
-        id: 13,
-        slideNumber: 13,
-        title: "12. 고객 피드백 및 사용자 검증",
-        subtitle: "Voice of Customer & Retention",
-        layout: "bullets",
-        content: [
-          "초기 베타 유저 대상 NPS 82점 달성 (극강의 사용자 만족도)",
-          "슬라이드 제작 소요시간 평균 4시간에서 45초로 90% 이상 획기적 단축",
-          "유료 결제 고객의 68%가 주력 Pro 요금제 선택",
-        ],
-      },
-      {
-        id: 14,
-        slideNumber: 14,
-        title: "13. 규제 준수 및 보안 프레임워크",
-        subtitle: "Compliance & Enterprise Security",
-        layout: "bullets",
-        content: [
-          "글로벌 표준 암호화 및 결제 데이터 보호 규정 완벽 준수",
-          "고객사 고유 프레젠테이션 데이터에 대한 엄격한 비공개 원칙 적용",
-          "클라우드 엣지 백업 체계 구축을 통한 무결성 보장",
-        ],
-      },
-      {
-        id: 15,
-        slideNumber: 15,
-        title: "14. 분기별 핵심 로드맵 (2026-2027)",
-        subtitle: "Quarterly Strategic Milestones",
-        layout: "bullets",
-        content: [
-          "Q1 2026: 프로덕션 런칭 및 초기 500명 글로벌 유료 고객 확보",
-          "Q2 2026: 팀 협업 기능 및 에이전시 전용 화이트라벨 콘솔 오픈",
-          "Q3-Q4 2026: 엔터프라이즈 B2B 라이선스 계약 및 ARR $500K 달성",
-        ],
-      },
-      {
-        id: 16,
-        slideNumber: 16,
-        title: "15. 자금 운용 및 투자 유치 계획",
-        subtitle: "Capital Allocation & Runway",
-        layout: "metrics",
-        content: [],
-        metrics: [
-          { label: "Product R&D", value: "45%" },
-          { label: "Global GTM", value: "35%" },
-          { label: "Ops & Reserve", value: "20%" },
-        ],
-      },
-      {
-        id: 17,
-        slideNumber: 17,
-        title: "16. 지속 가능한 장기 성장 동력",
-        subtitle: "Long-term Compounding Flywheel",
-        layout: "bullets",
-        content: [
-          "글로벌 바이럴 루프를 통한 고객 획득 비용의 지속적 하락",
-          "사용자 제작 템플릿 생태계 구축으로 플랫폼 락인 극대화",
-          "단일 제품에서 비즈니스 생산성 올인원 스위트로의 확장",
-        ],
-      },
-      {
-        id: 18,
-        slideNumber: 18,
-        title: "17. 글로벌 확장 전략",
-        subtitle: "Cross-Border Market Expansion",
-        layout: "bullets",
-        content: [
-          "영어권(북미/유럽) 중심의 1차 시장 침투 및 브랜드 인지도 선점",
-          "아시아 태평양(APAC) 다국어 로컬라이징을 통한 2차 스케일업",
-          "글로벌 SaaS 디렉토리 및 프로덕트 헌트 1위 런칭 전략 전개",
-        ],
-      },
-      {
-        id: 19,
-        slideNumber: 19,
-        title: "18. 핵심 가치 제안 요약",
-        subtitle: "Executive Summary & Final Takeaway",
-        layout: "bullets",
-        content: [
-          `'${userTopic}' 시장의 구조적 비효율을 해소하는 압도적 솔루션`,
-          "85%+ 순마진과 즉각적인 현금흐름 창출이 검증된 비즈니스 모델",
-          "속도와 실행력 중심의 린 스타트업 전략으로 시장 선점 확정",
-        ],
-      },
-      {
-        id: 20,
-        slideNumber: 20,
-        title: "19. Q&A 및 공식 문의",
-        subtitle: "Thank You & Call to Action",
-        layout: "title",
-        content: [
-          `감사합니다. '${userTopic}' 프레젠테이션을 마칩니다.`,
-          "Inquiries: contact@s-probiz.com | HookDeck PRO",
-        ],
-      },
-    ];
+  // 1. 프레임워크 결정 (사용자 명시적 선택 또는 AI 자동 키워드 감지)
+  let selectedFramework = req.frameworkId && req.frameworkId !== "auto"
+    ? getFrameworkById(req.frameworkId)
+    : detectFrameworkByTopic(userTopic + " " + customInstr);
 
-    return {
-      title: `${userTopic} 전략 기획서`,
-      description: `HookDeck PRO 엔진으로 기획된 ${userTopic} 프레젠테이션`,
-      slides: slides.slice(0, count),
-    };
+  // 2. 슬라이드 수 결정 (시간 프리셋 기반 또는 명시적 slideCount)
+  let targetCount = req.slideCount || 6;
+  if (req.duration) {
+    if (req.duration <= 3) targetCount = 5;
+    else if (req.duration <= 5) targetCount = 8;
+    else if (req.duration <= 10) targetCount = 12;
+    else targetCount = 18;
   }
 
-  // English Mode
-  const slides: SlideItem[] = [
-    {
+  // 3. 사용자가 커스텀 순서/목차를 명시했는지 검사 (예: 1. ... 2. ... 또는 줄바꿈 목록)
+  const combinedText = `${userTopic}\n${customInstr}`;
+  const customLines = combinedText
+    .split(/\n|,|;/)
+    .map((l) => l.trim())
+    .filter((l) => /^(슬라이드\s*\d+|\d+[\.\)\-:]|\-\s+)/i.test(l) || (l.length > 5 && (l.includes("순서") || l.includes("강조") || l.includes("소개"))));
+
+  const slides: SlideItem[] = [];
+
+  // 커스텀 지시사항이 2개 이상 구체적으로 파싱되는 경우 -> 커스텀 순서 최우선 반영 모드
+  if (customLines.length >= 2) {
+    // 슬라이드 1: 타이틀 슬라이드
+    slides.push({
       id: 1,
       slideNumber: 1,
-      title: userTopic,
-      subtitle: "Strategic Masterplan & Execution Roadmap",
-      layout: "title",
-      content: ["Architected with HookDeck PRO", "November 2026"],
-    },
-    {
-      id: 2,
-      slideNumber: 2,
-      title: "1. Market Challenge & Opportunity",
-      subtitle: `Key Drivers for "${userTopic}"`,
-      layout: "bullets",
-      content: [
-        `Surging global demand and fragmented market landscape in '${userTopic}'`,
-        "Incumbent solutions suffering from sluggish delivery and heavy cost structures",
-        "Clear blue-ocean advantage via agile, lightweight automation systems",
-      ],
-    },
-    {
-      id: 3,
-      slideNumber: 3,
-      title: "2. Key Growth & Performance Metrics",
-      subtitle: "Target KPI Milestones",
-      layout: "metrics",
-      content: [],
-      metrics: [
-        { label: "Productivity Gain", value: "+380%" },
-        { label: "Cost Reduction", value: "85%" },
-        { label: "Payback Period", value: "< 90 Days" },
-      ],
-    },
-    {
-      id: 4,
-      slideNumber: 4,
-      title: "3. Competitive Advantage & Unit Economics",
-      subtitle: "Why We Win",
-      layout: "bullets",
-      content: [
-        "10x faster time-to-value compared to legacy manual workflows",
-        "Zero-maintenance serverless architecture locking in 85%+ net operating margins",
-        "Frictionless global checkout via official PayPal Live integration",
-      ],
-    },
-    {
-      id: 5,
-      slideNumber: 5,
-      title: "4. Execution & Scaling Roadmap",
-      subtitle: "From Validation to Scale",
-      layout: "bullets",
-      content: [
-        "Milestone 1: Production launch and initial 100 paying customers onboarding",
-        "Milestone 2: Automated recurring subscription scaling & referral loops",
-        "Milestone 3: Strategic B2B licensing & enterprise agency accounts",
-      ],
-    },
-    {
-      id: 6,
-      slideNumber: 6,
-      title: "5. Conclusion & Actionable Next Steps",
-      subtitle: "Summary & Action Items",
-      layout: "bullets",
-      content: [
-        `Feasibility and unit economics for '${userTopic}' fully validated`,
-        "Immediate execution focus on distribution and paying customer acquisition",
-        "Inquiries: contact@s-probiz.com | Powered by HookDeck PRO",
-      ],
-    },
-    {
-      id: 7,
-      slideNumber: 7,
-      title: "6. Financial Outlook & Projections",
-      subtitle: "Financial Projections",
-      layout: "metrics",
-      content: [],
-      metrics: [
-        { label: "Target Year 1 MRR", value: "$30K+" },
-        { label: "Target Net Margin", value: "85%" },
-        { label: "Customer LTV", value: "$450" },
-      ],
-    },
-    {
-      id: 8,
-      slideNumber: 8,
-      title: "7. Strategic Risk Mitigation",
-      subtitle: "Risk Management",
-      layout: "bullets",
-      content: [
-        "Tech Risk: Serverless edge fallback ensuring zero system downtime",
-        "Marketing Risk: High-converting psychological hooks & organic viral loops",
-        "Billing Risk: Single PayPal standard infrastructure protecting transactions",
-      ],
-    },
-    {
-      id: 9,
-      slideNumber: 9,
-      title: "8. Operational Agility",
-      subtitle: "Team & Execution Capabilities",
-      layout: "bullets",
-      content: [
-        "Lean single-operator corporate structure optimizing speed and capital efficiency",
-        "Zero fixed server overhead guaranteeing profitability from Day 1",
-        "Data-driven weekly iteration cycle based on live user feedback",
-      ],
-    },
-    {
-      id: 10,
-      slideNumber: 10,
-      title: "9. Go-To-Market & Acquisition Loops",
-      subtitle: "GTM Strategy",
-      layout: "bullets",
-      content: [
-        "Early Adopter Penetration: Target active communities and high-intent founder networks",
-        "Organic Viral Flywheel: Free strategic framework templates generating inbound leads",
-        "Strategic Partnerships: Co-marketing with modern agencies and productivity platforms",
-      ],
-    },
-    {
-      id: 11,
-      slideNumber: 11,
-      title: "10. Unit Economics & Capital Efficiency",
-      subtitle: "Efficiency Metrics",
-      layout: "metrics",
-      content: [],
-      metrics: [
-        { label: "Payback Period", value: "< 2 Mo" },
-        { label: "LTV / CAC Ratio", value: "4.8x" },
-        { label: "Monthly Churn", value: "< 2.1%" },
-      ],
-    },
-    {
-      id: 12,
-      slideNumber: 12,
-      title: "11. Technical Architecture & Moat",
-      subtitle: "Proprietary Architecture",
-      layout: "bullets",
-      content: [
-        "Serverless zero-overhead infrastructure delivering 10x cost advantage over legacy stacks",
-        "Proprietary layout auto-balancer preventing content overflow and design breakage",
-        "Enterprise data isolation guaranteeing client confidentiality",
-      ],
-    },
-    {
-      id: 13,
-      slideNumber: 13,
-      title: "12. User Validation & Feedback",
-      subtitle: "Market Proof Points",
-      layout: "bullets",
-      content: [
-        "High Net Promoter Score (NPS 82) from beta executive cohorts",
-        "90%+ average reduction in presentation preparation time (from 4 hours to 45 seconds)",
-        "68% of paying users upgrading directly to the flagship $39 Pro tier",
-      ],
-    },
-    {
-      id: 14,
-      slideNumber: 14,
-      title: "13. Enterprise Compliance & Security",
-      subtitle: "Enterprise Standards",
-      layout: "bullets",
-      content: [
-        "Complete compliance with standard global security and encryption protocols",
-        "Strict data confidentiality policy with no unauthorized training on client inputs",
-        "Automated cloud backup ensuring high availability across all regions",
-      ],
-    },
-    {
-      id: 15,
-      slideNumber: 15,
-      title: "14. Execution Roadmap (2026-2027)",
-      subtitle: "Key Milestones",
-      layout: "bullets",
-      content: [
-        "Phase 1: Production launch and initial 500 paying customer onboarding",
-        "Phase 2: Collaborative multi-seat workspaces & agency white-label portals",
-        "Phase 3: Global enterprise licensing reaching $500K ARR milestone",
-      ],
-    },
-    {
-      id: 16,
-      slideNumber: 16,
-      title: "15. Capital Allocation & Budget",
-      subtitle: "Resource Allocation",
-      layout: "metrics",
-      content: [],
-      metrics: [
-        { label: "Product & AI Engine", value: "45%" },
-        { label: "Global Distribution", value: "35%" },
-        { label: "Operations & Reserve", value: "20%" },
-      ],
-    },
-    {
-      id: 17,
-      slideNumber: 17,
-      title: "16. Long-Term Compounding Flywheel",
-      subtitle: "Scalable Growth",
-      layout: "bullets",
-      content: [
-        "Decreasing blended CAC through continuous organic product referrals",
-        "Community template ecosystem creating defensible platform network effects",
-        "Expansion from single deck builder into full enterprise productivity ecosystem",
-      ],
-    },
-    {
-      id: 18,
-      slideNumber: 18,
-      title: "17. Global Market Expansion",
-      subtitle: "Cross-Border Scale",
-      layout: "bullets",
-      content: [
-        "North America & Europe primary market focus capturing high-WTP business users",
-        "APAC localized multi-language expansion for rapid secondary scaling",
-        "Targeted Product Hunt #1 Product of the Day global viral campaign",
-      ],
-    },
-    {
-      id: 19,
-      slideNumber: 19,
-      title: "18. Core Strategic Thesis & Value",
-      subtitle: "Executive Summary",
-      layout: "bullets",
-      content: [
-        `Category-defining solution solving structural presentation pain for '${userTopic}'`,
-        "85%+ gross profit margin with immediate Day 1 positive unit economics",
-        "Relentless founder-led execution speed capturing asymmetric market upside",
-      ],
-    },
-    {
-      id: 20,
-      slideNumber: 20,
-      title: "19. Q&A & Executive Contact",
-      subtitle: "Thank You & Action Items",
+      title: userTopic.split(/\n/)[0].replace(/^(슬라이드\s*\d+|\d+[\.\)\-:]|\-\s+)/, "").trim(),
+      subtitle: isKo ? `${selectedFramework.nameKo} 맞춤 실행 계획` : `${selectedFramework.nameEn} Custom Blueprint`,
       layout: "title",
       content: [
-        `Thank you. '${userTopic}' strategic presentation concludes.`,
-        "Inquiries: contact@s-probiz.com | HookDeck PRO",
+        isKo ? `분석 및 기획: HookDeck PRO (${selectedFramework.nameKo})` : `Architected with HookDeck PRO`,
+        isKo ? "사용자 맞춤형 순서 및 요청사항 100% 반영" : "Tailored to Custom Specifications"
       ],
-    },
-  ];
+      speakerNotes: isKo
+        ? `안녕하십니까. 오늘 발표는 귀사께서 요청하신 순서와 방향에 맞추어 설계된 '${userTopic}' 프레젠테이션입니다.`
+        : `Welcome everyone. Today's presentation on '${userTopic}' is structured precisely according to your bespoke priorities.`
+    });
+
+    // 커스텀 라인들을 슬라이드로 변환
+    customLines.forEach((line, idx) => {
+      const cleanTitle = line.replace(/^(슬라이드\s*\d+|\d+[\.\)\-:]|\-\s+)/, "").trim();
+      const slideNum = idx + 2;
+
+      // 지표나 숫자가 포함된 경우 -> metrics 레이아웃
+      const hasNumbers = /\d+[%억만달러원kKmM]|\b(roi|kpi|cvr|cac|mrr|arr)\b/i.test(cleanTitle);
+
+      if (hasNumbers) {
+        slides.push({
+          id: slideNum,
+          slideNumber: slideNum,
+          title: cleanTitle,
+          subtitle: isKo ? "핵심 목표 수치 및 성과 지표 (KPI)" : "Key Performance Indicators & Milestones",
+          layout: "metrics",
+          content: [],
+          metrics: [
+            { label: isKo ? "목표 성장률" : "Target Velocity", value: "+300%" },
+            { label: isKo ? "핵심 달성 지표" : "Primary Milestone", value: "100% 달성" },
+            { label: isKo ? "기대 회수 기간" : "Payback Period", value: "< 3개월" }
+          ],
+          speakerNotes: isKo
+            ? `이 슬라이드는 요청하신 '${cleanTitle}'에 대한 정량적 목표와 핵심 지표를 나타냅니다.`
+            : `This slide represents the verified quantitative KPIs and metrics requested for '${cleanTitle}'.`
+        });
+      } else {
+        slides.push({
+          id: slideNum,
+          slideNumber: slideNum,
+          title: cleanTitle,
+          subtitle: isKo ? "세부 실행 방안 및 핵심 추진 과제" : "Key Execution Strategy & Core Priorities",
+          layout: "bullets",
+          content: isKo
+            ? [
+                `'${cleanTitle}' 달성을 위한 선제적 시장 분석 및 리소스 배분`,
+                "고객 및 이해관계자의 페인포인트를 해소하는 구체적 솔루션 가동",
+                "지속 가능한 경쟁 우위 및 리스크 관리 체계 확립"
+              ]
+            : [
+                `Dedicated resource mobilization to execute '${cleanTitle}' seamlessly`,
+                "Eliminating user and partner friction points via disciplined execution",
+                "Establishing compounding defensibility and robust operational safeguards"
+              ],
+          speakerNotes: isKo
+            ? `다음으로 중요하게 강조하신 '${cleanTitle}'에 대한 세부 실행 계획을 설명드리겠습니다.`
+            : `Next, turning to your priority focus: '${cleanTitle}' and our step-by-step rollout.`
+        });
+      }
+    });
+
+    // 마지막 슬라이드: 결론 및 Q&A
+    const finalSlideNum = slides.length + 1;
+    slides.push({
+      id: finalSlideNum,
+      slideNumber: finalSlideNum,
+      title: isKo ? "결론 및 향후 계획 (Next Steps)" : "Conclusion & Next Steps",
+      subtitle: isKo ? "성공적인 실행을 위한 즉각적인 액션 아이템" : "Immediate Milestones & Action Items",
+      layout: "bullets",
+      content: isKo
+        ? [
+            `요청하신 모든 핵심 과제 및 순서별 마일스톤에 대한 실행 준비 완료`,
+            "즉각적인 추진을 위한 리소스 배정 및 전담 태스크포스(TF) 가동",
+            "문의 및 협업: contact@s-probiz.com | Powered by HookDeck PRO"
+          ]
+        : [
+            `Full execution readiness across all specified priority tracks`,
+            "Resource allocation and operational launch team mobilized immediately",
+            "Contact: contact@s-probiz.com | Powered by HookDeck PRO"
+          ],
+      speakerNotes: isKo
+        ? "이상으로 요청하신 순서에 따른 발표를 마치겠습니다. 경청해 주셔서 대단히 감사드립니다."
+        : "Thank you for your attention. We are ready to execute on these clear action items."
+    });
+  } else {
+    // 기본 모드: 선택된 20대 전문 프레임워크 템플릿 기반 생성
+    const rawTemplates = selectedFramework.slides;
+
+    // 타깃 슬라이드 장수에 맞추어 슬라이드 템플릿 매핑
+    rawTemplates.forEach((tmpl, idx) => {
+      const slideNum = idx + 1;
+      slides.push({
+        id: slideNum,
+        slideNumber: slideNum,
+        title: isKo ? tmpl.titleKo(userTopic) : tmpl.titleEn(userTopic),
+        subtitle: isKo ? tmpl.subtitleKo : tmpl.subtitleEn,
+        layout: tmpl.layout,
+        content: isKo ? tmpl.contentKo(userTopic) : tmpl.contentEn(userTopic),
+        metrics: tmpl.metrics,
+        speakerNotes: isKo ? tmpl.speakerNotesKo(userTopic) : tmpl.speakerNotesEn(userTopic)
+      });
+    });
+
+    // 만약 targetCount가 기본 템플릿 수보다 많은 경우 (예: 10분 12장, 20분 18장 등)
+    // 심층 세부 슬라이드를 추가로 생성하여 완벽하게 장수 충족
+    const extraTopicsKo = [
+      {
+        title: "심층 경쟁 비교 및 포지셔닝 맵",
+        subtitle: "경쟁사 대비 압도적인 차별화 우위",
+        layout: "bullets" as const,
+        content: [
+          "기존 시장 선도 기업들의 기술적 부채 및 높은 유지비용 공략",
+          "당사만의 독자적인 기능 및 유연한 가격 정책으로 고객 전환 가속화",
+          "높은 전환 비용(Switching Cost)을 구축하여 장기 고객 리텐션 확보"
+        ],
+        notes: "경쟁사 대비 당사의 가격과 기능 우위를 시각화하여 투자자와 고객의 확신을 이끌어냅니다."
+      },
+      {
+        title: "글로벌 시장 침투 및 유통 채널 전략 (GTM)",
+        subtitle: "국경 없는 확장과 스케일업 가속화",
+        layout: "bullets" as const,
+        content: [
+          "영미권 및 유럽 핵심 버티컬 커뮤니티 중심의 오가닉 침투",
+          "글로벌 인플루언서 제휴 및 기술 블로그 기반 콘텐츠 바이럴 가동",
+          "현지화된 고객 지원 및 결제 수단 확충을 통한 구매 전환율 극대화"
+        ],
+        notes: "초기 성공 경험을 바탕으로 글로벌 주요 거점으로 공격적인 확장을 전개하겠습니다."
+      },
+      {
+        title: "핵심 팀 역량 및 거버넌스",
+        subtitle: "실행력을 입증한 베테랑 전문가 그룹",
+        layout: "bullets" as const,
+        content: [
+          "10년 이상 유관 산업 경력을 보유한 기술 및 사업개발 리더십",
+          "린(Lean) 조직 운영을 통한 빠른 의사결정 및 주간 단위 기능 배포",
+          "업계 최고 전문가로 구성된 자문단 네트워크 보유"
+        ],
+        notes: "어떤 위기 상황에서도 실행할 수 있는 역량과 회복탄력성을 갖춘 팀입니다."
+      },
+      {
+        title: "재무 모델 및 세부 현금흐름 추정",
+        subtitle: "3개년 재무 안정성 및 자본 효율성",
+        layout: "metrics" as const,
+        content: [],
+        metrics: [
+          { label: "예상 연간 반복매출 (ARR)", value: "$2.4M" },
+          { label: "자본 효율성 지수 (Rule of 40)", value: "58%" },
+          { label: "현금 런웨이", value: "24개월+" }
+        ],
+        notes: "안정적인 현금흐름과 건전한 유닛 이코노믹스를 통해 지속 가능한 자본 효율성을 달성합니다."
+      },
+      {
+        title: "리스크 요인 및 선제적 대응 체계",
+        subtitle: "대내외 변수 헤징 및 비상 계획 (Contingency)",
+        layout: "bullets" as const,
+        content: [
+          "시장 진입 장벽: 특허 및 자체 데이터셋 축적을 통한 기술적 해자 구축",
+          "규제 환경 변화: 컴플라이언스 전담 모니터링을 통한 선제적 적법성 확보",
+          "운영 연속성: 멀티 리전 엣지 인프라 구축으로 재해 시 1분 내 자동 복구"
+        ],
+        notes: "사전에 예상되는 리스크를 투명하게 공유하고 완벽한 대비책을 마련해 두었습니다."
+      },
+      {
+        title: "최종 요약 및 추진 일정 (Call to Action)",
+        subtitle: "성공적인 협력을 위한 향후 추진 계획",
+        layout: "bullets" as const,
+        content: [
+          `'${userTopic}' 시장 선점을 위한 전략적 모멘텀 확보`,
+          "즉각적인 파트너십 및 투자 집행을 위한 계약 프로세스 개시",
+          "공식 채널: contact@s-probiz.com | HookDeck PRO"
+        ],
+        notes: "경청해 주셔서 감사합니다. 지금 바로 첫 걸음을 함께 시작하시기를 제안드립니다."
+      }
+    ];
+
+    const extraTopicsEn = [
+      {
+        title: "Competitive Landscape & Market Moat",
+        subtitle: "Defensible Positioning Against Legacy Players",
+        layout: "bullets" as const,
+        content: [
+          "Targeting incumbent technical debt and prohibitive legacy licensing structures",
+          "Accelerating user migration via frictionless self-serve onboarding and agile pricing",
+          "Engineering high workflow switching costs to secure sticky multi-year retention"
+        ],
+        notes: "Our clear structural cost advantage allows us to capture market share from complacent incumbents."
+      },
+      {
+        title: "Go-to-Market & Global Expansion Flywheel",
+        subtitle: "Repeatable Scaled Customer Acquisition",
+        layout: "bullets" as const,
+        content: [
+          "Organic penetration via high-intent vertical developer and operator ecosystems",
+          "Strategic affiliate distribution networks multiplying organic word-of-mouth",
+          "Localized currency rails and localized 24/7 success desks maximizing global CVR"
+        ],
+        notes: "Our acquisition engine compounds organically, driving down customer acquisition costs over time."
+      },
+      {
+        title: "Leadership & Execution Capabilities",
+        subtitle: "Domain Experts Built for Rapid Iteration",
+        layout: "bullets" as const,
+        content: [
+          "Founding leadership with 10+ years direct experience scaling enterprise products",
+          "Lean operational pods shipping production-grade updates on weekly cadences",
+          "Backed by an elite advisory board of industry operators and pioneers"
+        ],
+        notes: "Our proven track record demonstrates our ability to navigate market ambiguity and deliver results."
+      },
+      {
+        title: "Financial Sensitivity & Runway Projections",
+        subtitle: "Capital Discipline & Rule of 40 Excellence",
+        layout: "metrics" as const,
+        content: [],
+        metrics: [
+          { label: "Target ARR (Year 2)", value: "$2.4M" },
+          { label: "Rule of 40 Score", value: "58%" },
+          { label: "Runway Runway", value: "24+ Mo" }
+        ],
+        notes: "Our capital-efficient model compounds free cash flow without reckless burn."
+      },
+      {
+        title: "Defensive Risk Hedging & Safeguards",
+        subtitle: "Proactive Contingency & Regulatory Postures",
+        layout: "bullets" as const,
+        content: [
+          "IP Defense: Multi-layer proprietary algorithms and defensible data moats",
+          "Regulatory Foresight: Continuous compliance monitoring ensuring seamless audit readiness",
+          "Operational Continuity: Distributed multi-region edge redundancies guaranteeing zero downtime"
+        ],
+        notes: "We proactively mitigate downside vectors to ensure predictable and durable enterprise upside."
+      },
+      {
+        title: "Closing Call to Action & Next Milestones",
+        subtitle: "Seizing the Market Opportunity Together",
+        layout: "bullets" as const,
+        content: [
+          `Clear strategic runway to establish category dominance in '${userTopic}'`,
+          "Formalizing partnership terms and deploying capital allocations immediately",
+          "Contact: contact@s-probiz.com | Powered by HookDeck PRO"
+        ],
+        notes: "Thank you for your time and partnership. We invite you to join us on this breakthrough journey."
+      }
+    ];
+
+    const extras = isKo ? extraTopicsKo : extraTopicsEn;
+    let extraIdx = 0;
+    while (slides.length < targetCount && extraIdx < extras.length) {
+      const ext = extras[extraIdx];
+      const nextSlideNum = slides.length + 1;
+      slides.push({
+        id: nextSlideNum,
+        slideNumber: nextSlideNum,
+        title: ext.title,
+        subtitle: ext.subtitle,
+        layout: ext.layout,
+        content: ext.content,
+        metrics: (ext as any).metrics,
+        speakerNotes: isKo ? ext.notes : ext.notes
+      });
+      extraIdx++;
+    }
+  }
+
+  // 슬라이드 번호 정돈
+  slides.forEach((s, idx) => {
+    s.id = idx + 1;
+    s.slideNumber = idx + 1;
+  });
 
   return {
-    title: `${userTopic} - Executive Deck`,
-    description: `Executive presentation generated for ${userTopic}`,
-    slides: slides.slice(0, count),
+    title: userTopic,
+    description: isKo ? `${selectedFramework.nameKo} 프레임워크 기반 프레젠테이션` : `${selectedFramework.nameEn} Framework Deck`,
+    frameworkId: selectedFramework.id,
+    frameworkName: isKo ? selectedFramework.nameKo : selectedFramework.nameEn,
+    slides: slides.slice(0, targetCount)
   };
 }
