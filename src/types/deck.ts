@@ -1,3 +1,5 @@
+export type UserPlan = 'free' | 'starter' | 'pro' | 'agency';
+
 export interface SlideItem {
   id: number;
   slideNumber: number;
@@ -10,6 +12,7 @@ export interface SlideItem {
   imagePrompt?: string;
   imageUrl?: string;
   speakerNotes?: string; // 🎙️ 발표자 스피치 대본 / Speaker Notes
+  isLocked?: boolean; // Pro 잠금 여부
 }
 
 export interface DeckRequest {

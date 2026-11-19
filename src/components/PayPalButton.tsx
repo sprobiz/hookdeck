@@ -1,18 +1,22 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, ShieldCheck } from "lucide-react";
 
 interface PayPalButtonProps {
+  planId?: string;
   planName: string;
   amount: string;
-  onSuccess: (details: any) => void;
+  onSuccess: (details: any, planId?: string) => void;
+  onCancel?: () => void;
 }
 
-export default function PayPalButton({ planName, amount, onSuccess }: PayPalButtonProps) {
+export default function PayPalButton({ planId = "pro", planName, amount, onSuccess, onCancel }: PayPalButtonProps) {
   const paypalRef = useRef<HTMLDivElement>(null);
   const [loading, setLoading] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [cancelNotice, setCancelNotice] = useState<string | null>(null);
 
   // 대표님의 공식 HookThumb Live Client ID (PayPal Status 200 검증 완료)
   const HOOKTHUMB_LIVE_CLIENT_ID = "BAA-QDPvw8m5aDwZor5whiurHPUYq9oGZvl2GyXD5VMAMgpJrUSEjLCr2lYrQgQObOjnnpqpqw7lbkvINo";
@@ -43,7 +47,11 @@ export default function PayPalButton({ planName, amount, onSuccess }: PayPalButt
                 label: "pay",
                 height: 46,
               },
+              onClick: () => {
+                setCancelNotice(null);
+              },
               createOrder: (_data: any, actions: any) => {
+                setIsProcessing(true);
                 return actions.order.create({
                   purchase_units: [
                     {
@@ -57,12 +65,30 @@ export default function PayPalButton({ planName, amount, onSuccess }: PayPalButt
                 });
               },
               onApprove: async (_data: any, actions: any) => {
-                const order = await actions.order.capture();
-                onSuccess(order);
+                try {
+                  setIsProcessing(true);
+                  const order = await actions.order.capture();
+                  setIsProcessing(false);
+                  onSuccess(order, planId);
+                } catch (captureErr) {
+                  console.error("Capture Error:", captureErr);
+                  setIsProcessing(false);
+                  alert("결제 승인 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.");
+                }
+              },
+              onCancel: (data: any) => {
+                console.log("PayPal Payment Cancelled:", data);
+                setIsProcessing(false);
+                setCancelNotice("결제가 취소되었습니다. 언제든 다시 시도하실 수 있습니다.");
+                setTimeout(() => {
+                  if (isMounted) setCancelNotice(null);
+                }, 4000);
+                if (onCancel) onCancel();
               },
               onError: (err: any) => {
                 console.error("PayPal Error:", err);
-                alert("PayPal payment could not be processed. Please try again.");
+                setIsProcessing(false);
+                alert("PayPal 결제 처리 중 문제가 발생했습니다. 계정 또는 네트워크 상태를 확인해 주세요.");
               },
             })
             .render(paypalRef.current)
@@ -122,10 +148,19 @@ export default function PayPalButton({ planName, amount, onSuccess }: PayPalButt
     return () => {
       isMounted = false;
     };
-  }, [planName, amount, clientId, onSuccess]);
+  }, [planId, planName, amount, clientId, onSuccess, onCancel]);
 
   return (
-    <div className="w-full my-3">
+    <div className="relative w-full my-3">
+      {/* 결제 승인 처리 중 오버레이 (중복 클릭 방지) */}
+      {isProcessing && (
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-900/90 backdrop-blur-sm rounded-xl border border-pink-500/40 p-3 text-center animate-fadeIn">
+          <Loader2 className="w-6 h-6 text-pink-400 animate-spin mb-2" />
+          <span className="text-xs font-bold text-white">결제 승인 처리 중...</span>
+          <span className="text-[10px] text-slate-400 mt-0.5">창을 닫지 말고 잠시만 기다려 주세요</span>
+        </div>
+      )}
+
       {loading && (
         <div className="w-full h-12 flex items-center justify-center gap-2 rounded-xl bg-slate-800/60 border border-slate-700/80 text-xs text-slate-400">
           <Loader2 className="w-4 h-4 text-pink-400 animate-spin" />
@@ -137,6 +172,12 @@ export default function PayPalButton({ planName, amount, onSuccess }: PayPalButt
         <div className="w-full p-3 rounded-xl bg-rose-950/40 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{loadError}</span>
+        </div>
+      )}
+
+      {cancelNotice && (
+        <div className="w-full p-2.5 mb-2 rounded-xl bg-amber-950/40 border border-amber-500/30 text-amber-300 text-[11px] text-center animate-fadeIn">
+          {cancelNotice}
         </div>
       )}
 

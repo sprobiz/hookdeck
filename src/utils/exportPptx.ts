@@ -1,14 +1,15 @@
 import pptxgen from "pptxgenjs";
-import { DeckResponse, SlideItem } from "@/types/deck";
+import { DeckResponse, SlideItem, UserPlan } from "@/types/deck";
 import { getThemeById } from "./themes";
 
-export function exportToPPTX(deck: DeckResponse, themeId: string = "dark-tech") {
+export function exportToPPTX(deck: DeckResponse, themeId: string = "dark-tech", userPlan: UserPlan = "free") {
   const pres = new pptxgen();
   // pptxgenjs의 기본 LAYOUT_16x9는 너비 10.0인치, 높이 5.625인치입니다.
   pres.layout = "LAYOUT_16x9";
   pres.title = deck.title;
 
   const theme = getThemeById(themeId);
+  const isFreePlan = userPlan === "free";
   const slideW = 10.0;
 
   deck.slides.forEach((s: SlideItem) => {
@@ -18,6 +19,20 @@ export function exportToPPTX(deck: DeckResponse, themeId: string = "dark-tech") 
     // 🎙️ 파워포인트 원본 비고란(Speaker Notes)에 1분 발표 대본 자동 삽입!
     if (s.speakerNotes) {
       slide.addNotes(s.speakerNotes);
+    }
+
+    // 🔒 무료 체험 플랜인 경우 워터마크 추가 (유료 회원은 100% 클린 슬라이드 제공)
+    if (isFreePlan) {
+      slide.addText("HookDeck PRO Free Preview • Unlock Clean PPTX at hookdeck.digital", {
+        x: 0.8,
+        y: 0.15,
+        w: 8.4,
+        h: 0.3,
+        fontSize: 8.5,
+        bold: true,
+        color: "EC4899",
+        align: "right",
+      });
     }
 
     if (s.layout === "title") {

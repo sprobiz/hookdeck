@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Sparkles,
   Layers,
@@ -16,10 +16,12 @@ import {
   HelpCircle,
   ChevronDown,
   Loader2,
+  Crown,
 } from "lucide-react";
 import SlideViewer from "@/components/SlideViewer";
 import PricingSection from "@/components/PricingSection";
-import { DeckResponse } from "@/types/deck";
+import ThemeShowcase from "@/components/ThemeShowcase";
+import { DeckResponse, UserPlan } from "@/types/deck";
 import { translations, Language } from "@/utils/translations";
 import { THEMES_LIST } from "@/utils/themes";
 import { FRAMEWORKS_LIST, detectFrameworkByTopic } from "@/utils/frameworks";
@@ -38,6 +40,17 @@ export default function Home() {
   const [loadingStep, setLoadingStep] = useState(1);
   const [detectedFrameworkName, setDetectedFrameworkName] = useState("");
   const [deck, setDeck] = useState<DeckResponse | null>(null);
+  const [userPlan, setUserPlan] = useState<UserPlan>("free");
+
+  // 유저 플랜 hydration
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedPlan = localStorage.getItem("hookdeck_user_plan") as UserPlan | null;
+      if (savedPlan && ["starter", "pro", "agency"].includes(savedPlan)) {
+        setUserPlan(savedPlan);
+      }
+    }
+  }, []);
 
   const t = translations[lang];
 
@@ -300,12 +313,19 @@ export default function Home() {
               </button>
             </div>
 
-            <a
-              href="#pricing"
-              className="hidden sm:inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider text-white bg-gradient-to-r from-rose-500 via-pink-500 to-red-500 hover:opacity-95 shadow-md shadow-pink-500/20 transition"
-            >
-              {t.nav.upgrade}
-            </a>
+            {userPlan !== "free" ? (
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                <Crown className="w-3.5 h-3.5" />
+                <span>{userPlan.toUpperCase()} ACTIVE</span>
+              </span>
+            ) : (
+              <a
+                href="#pricing"
+                className="hidden sm:inline-flex items-center justify-center px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider text-white bg-gradient-to-r from-rose-500 via-pink-500 to-red-500 hover:opacity-95 shadow-md shadow-pink-500/20 transition"
+              >
+                {t.nav.upgrade}
+              </a>
+            )}
           </div>
         </div>
       </header>
@@ -444,12 +464,17 @@ export default function Home() {
                   )}
                 </div>
 
-                {/* 4. 테마 선택 */}
+                {/* 4. 대표 테마 비주얼 쇼케이스 & 드롭다운 선택 */}
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 mb-1.5 flex items-center gap-1.5">
-                    <Palette className="w-3.5 h-3.5 text-pink-400" />
-                    <span>{t.hero.themeLabel}</span>
-                  </label>
+                  <ThemeShowcase
+                    selectedThemeId={themeId}
+                    onSelectTheme={setThemeId}
+                    lang={lang}
+                  />
+
+                  <div className="mt-2 flex items-center justify-between text-xs text-slate-400 mb-1">
+                    <span>{lang === "ko" ? "전체 20+ 전문 테마 선택:" : "All 20+ Executive Themes:"}</span>
+                  </div>
                   <select
                     value={themeId}
                     onChange={(e) => setThemeId(e.target.value)}
@@ -515,7 +540,17 @@ export default function Home() {
               <h2 className="mt-2 text-2xl font-black text-white">{deck.title}</h2>
               <p className="text-xs text-slate-400 mt-1">{deck.description}</p>
             </div>
-            <SlideViewer slides={deck.slides} deckTitle={deck.title} themeId={themeId} lang={lang} />
+            <SlideViewer
+              slides={deck.slides}
+              deckTitle={deck.title}
+              themeId={themeId}
+              lang={lang}
+              userPlan={userPlan}
+              onUpgradeClick={() => {
+                const pricingElem = document.getElementById("pricing");
+                if (pricingElem) pricingElem.scrollIntoView({ behavior: "smooth" });
+              }}
+            />
           </section>
         )}
 
@@ -589,7 +624,11 @@ export default function Home() {
 
         {/* 100% 공식 PayPal Live 결제 섹션 */}
         <section id="pricing" className="py-16 md:py-24 bg-[#080d1a] border-t border-slate-800/80">
-          <PricingSection lang={lang} />
+          <PricingSection
+            lang={lang}
+            userPlan={userPlan}
+            onPlanSelected={(newPlan) => setUserPlan(newPlan)}
+          />
         </section>
       </main>
 
