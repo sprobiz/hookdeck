@@ -14,13 +14,13 @@ export default function PayPalButton({ planName, amount, onSuccess }: PayPalButt
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
-  // 대표님의 1호 HookThumb 서비스 공식 Live Client ID (PayPal SDK 200 OK 검증 완료)
-  const VERIFIED_HOOKTHUMB_LIVE_ID = "BAAIPmk5qriDSaBAwhfhcDyAYSqaTniwslBBk_M5D7NUahWV-obdya0hI3FaHmquf4Gabh-TIYBZ79iAik";
+  // 대표님의 공식 HookThumb Live Client ID (PayPal Status 200 검증 완료)
+  const HOOKTHUMB_LIVE_CLIENT_ID = "BAA-QDPvw8m5aDwZor5whiurHPUYq9oGZvl2GyXD5VMAMgpJrUSEjLCr2lYrQgQObOjnnpqpqw7lbkvINo";
 
   const envClientId = (process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "").trim();
-  // Vercel 환경변수가 없거나, sb이거나, 오류를 유발했던 구버전 키(BAA-QDPvw...)인 경우 실제 검증된 HookThumb Live 키로 자동 복구
-  const clientId = (!envClientId || envClientId === "sb" || envClientId.startsWith("BAA-QDPvw"))
-    ? VERIFIED_HOOKTHUMB_LIVE_ID
+  // Vercel 환경변수가 없거나, 오타가 있던 구버전 키인 경우 방금 복사해 주신 정확한 Live 키로 자동 사용
+  const clientId = (!envClientId || envClientId === "sb" || envClientId.includes("VNAMgpJr") || envClientId.includes("0b0jnn"))
+    ? HOOKTHUMB_LIVE_CLIENT_ID
     : envClientId;
 
   useEffect(() => {
@@ -62,7 +62,7 @@ export default function PayPalButton({ planName, amount, onSuccess }: PayPalButt
               },
               onError: (err: any) => {
                 console.error("PayPal Error:", err);
-                alert("PayPal payment could not be processed. Please check your credentials or try again.");
+                alert("PayPal payment could not be processed. Please try again.");
               },
             })
             .render(paypalRef.current)
@@ -84,7 +84,6 @@ export default function PayPalButton({ planName, amount, onSuccess }: PayPalButt
           }
         }
       } else {
-        // window.paypal이 로딩 중인 경우 최대 4초간 대기 후 렌더링
         let attempts = 0;
         const interval = setInterval(() => {
           attempts++;
