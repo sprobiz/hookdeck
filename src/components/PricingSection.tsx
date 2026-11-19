@@ -139,7 +139,10 @@ export default function PricingSection({ lang, onPlanSelected }: PricingSectionP
                   </div>
                 ) : (
                   <button
-                    onClick={() => setSelectedPlan(plan.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedPlan(plan.id);
+                    }}
                     className="w-full py-3.5 px-4 rounded-xl text-sm font-bold text-slate-200 bg-slate-800 hover:bg-slate-700 transition border border-slate-700"
                   >
                     {t.selectPlan}
