@@ -3,7 +3,7 @@ import "./globals.css";
 import "../../public/output.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.hookdeck.digital"),
+  metadataBase: new URL("https://hookdeck.digital"),
   title: "HookDeck PRO - High-Converting AI Presentation Deck Builder with Notes",
   description:
     "Turn any idea into executive pitch decks with 20+ specialized frameworks & embedded speaker notes in 45s. Native .pptx export.",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     "PowerPoint AI Generator",
     "HookDeck PRO",
   ],
-  authors: [{ name: "HookDeck PRO Team", url: "https://www.hookdeck.digital" }],
+  authors: [{ name: "HookDeck PRO Team", url: "https://hookdeck.digital" }],
   creator: "HookDeck PRO",
   publisher: "HookDeck PRO",
   robots: {
@@ -32,24 +32,24 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://www.hookdeck.digital",
+    canonical: "https://hookdeck.digital",
     languages: {
-      "en-US": "https://www.hookdeck.digital",
-      "ko-KR": "https://www.hookdeck.digital?lang=ko",
+      "en-US": "https://hookdeck.digital",
+      "ko-KR": "https://hookdeck.digital?lang=ko",
     },
   },
   openGraph: {
     type: "website",
     locale: "en_US",
     alternateLocale: ["ko_KR"],
-    url: "https://www.hookdeck.digital",
+    url: "https://hookdeck.digital",
     siteName: "HookDeck PRO",
     title: "HookDeck PRO - High-Converting AI Presentation Deck Builder with Notes",
     description:
       "Turn any idea into executive pitch decks with 20+ specialized frameworks & embedded speaker notes in 45s. Native .pptx export.",
     images: [
       {
-        url: "/og-image.png",
+        url: "https://hookdeck.digital/og-image.png",
         width: 1200,
         height: 630,
         alt: "HookDeck PRO - High-Converting AI Presentation Deck Builder",
@@ -61,7 +61,7 @@ export const metadata: Metadata = {
     title: "HookDeck PRO - High-Converting AI Presentation Deck Builder with Notes",
     description:
       "Turn any idea into executive pitch decks with 20+ specialized frameworks & embedded speaker notes in 45s. Native .pptx export.",
-    images: ["/og-image.png"],
+    images: ["https://hookdeck.digital/og-image.png"],
     creator: "@hookdeck_pro",
   },
   icons: {

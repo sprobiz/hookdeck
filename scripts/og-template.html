@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HookDeck PRO OG Image</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      width: 1200px;
+      height: 630px;
+      overflow: hidden;
+      background-color: #070b14;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #ffffff;
+      display: flex;
+      position: relative;
+    }
+
+    /* Radial glows */
+    .glow-top {
+      position: absolute;
+      top: -120px;
+      left: 100px;
+      width: 500px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.18) 0%, rgba(99, 102, 241, 0.08) 50%, transparent 70%);
+      filter: blur(60px);
+      pointer-events: none;
+    }
+    .glow-right {
+      position: absolute;
+      top: 50px;
+      right: -80px;
+      width: 600px;
+      height: 550px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.22) 0%, rgba(236, 72, 153, 0.12) 50%, transparent 75%);
+      filter: blur(70px);
+      pointer-events: none;
+    }
+
+    /* Subtle grid overlay */
+    .grid-pattern {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(ellipse at center, rgba(0,0,0,1) 40%, rgba(0,0,0,0.2) 100%);
+      pointer-events: none;
+    }
+
+    .container {
+      width: 1200px;
+      height: 630px;
+      padding: 60px 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Left Content Column */
+    .left-col {
+      width: 530px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      background: rgba(236, 72, 153, 0.12);
+      border: 1.5px solid rgba(236, 72, 153, 0.35);
+      border-radius: 9999px;
+      color: #f472b6;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      box-shadow: 0 0 20px rgba(236, 72, 153, 0.2);
+      margin-bottom: 24px;
+      width: fit-content;
+    }
+
+    .badge-icon {
+      font-size: 15px;
+    }
+
+    .headline {
+      font-size: 54px;
+      font-weight: 900;
+      line-height: 1.12;
+      letter-spacing: -1.5px;
+      color: #ffffff;
+      margin-bottom: 20px;
+    }
+
+    .headline span.gradient {
+      background: linear-gradient(135deg, #f472b6 0%, #fb7185 50%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtext {
+      font-size: 19px;
+      font-weight: 600;
+      color: #cbd5e1;
+      line-height: 1.5;
+      margin-bottom: 34px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .dot {
+      color: #ec4899;
+      font-size: 18px;
+    }
+
+    /* Highlights Pills */
+    .pills-group {
+      display: flex;
+      gap: 12px;
+    }
+
+    .pill-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 14px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #94a3b8;
+    }
+    .pill-item span.icon {
+      color: #34d399;
+      font-weight: 900;
+    }
+
+    /* Right Mockup Card */
+    .right-col {
+      width: 530px;
+      position: relative;
+    }
+
+    .slide-card {
+      width: 520px;
+      height: 330px;
+      background: #0b1120;
+      border: 1.5px solid rgba(236, 72, 153, 0.4);
+      border-radius: 24px;
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.85),
+        0 0 35px rgba(236, 72, 153, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      transform: rotate(-1.5deg);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .card-badge {
+      font-size: 11px;
+      font-weight: 800;
+      color: #ec4899;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: rgba(236, 72, 153, 0.12);
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+
+    .card-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+    }
+
+    .card-main {
+      margin: 12px 0;
+    }
+
+    .slide-title {
+      font-size: 21px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.25;
+      margin-bottom: 6px;
+    }
+
+    .slide-subtitle {
+      font-size: 13px;
+      color: #94a3b8;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+
+    /* Mini Metric Boxes */
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .metric-box {
+      background: #111a2e;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 12px;
+      padding: 10px 12px;
+      text-align: left;
+    }
+
+    .metric-val {
+      font-size: 17px;
+      font-weight: 800;
+      color: #ec4899;
+      margin-bottom: 2px;
+    }
+    .metric-val.green {
+      color: #34d399;
+    }
+    .metric-val.blue {
+      color: #38bdf8;
+    }
+
+    .metric-lbl {
+      font-size: 10px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Card Bottom Notes Bar */
+    .card-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 11px;
+    }
+
+    .notes-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #cbd5e1;
+      font-weight: 600;
+    }
+
+    .pptx-pill {
+      background: linear-gradient(135deg, #ec4899 0%, #db2777 100%);
+      color: #ffffff;
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 11px;
+      box-shadow: 0 4px 12px rgba(236, 72, 153, 0.35);
+    }
+
+    /* Floating decorator card */
+    .floating-pill {
+      position: absolute;
+      bottom: -15px;
+      right: 20px;
+      background: #0f172a;
+      border: 1px solid rgba(52, 211, 153, 0.4);
+      padding: 8px 16px;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #34d399;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+      transform: rotate(2deg);
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-top"></div>
+  <div class="glow-right"></div>
+  <div class="grid-pattern"></div>
+
+  <div class="container">
+    <!-- Left Column -->
+    <div class="left-col">
+      <div class="badge">
+        <span class="badge-icon">⚡</span>
+        <span>HookDeck PRO</span>
+      </div>
+
+      <h1 class="headline">
+        45s AI <span class="gradient">Pitch Deck</span> Builder
+      </h1>
+
+      <p class="subtext">
+        <span>20+ Frameworks</span>
+        <span class="dot">•</span>
+        <span>Speaker Notes</span>
+        <span class="dot">•</span>
+        <span>Native .pptx</span>
+      </p>
+
+      <div class="pills-group">
+        <div class="pill-item">
+          <span class="icon">✓</span>
+          <span>Instant .pptx Download</span>
+        </div>
+        <div class="pill-item">
+          <span class="icon">✓</span>
+          <span>1-Min Speech Notes</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Mockup Column -->
+    <div class="right-col">
+      <div class="slide-card">
+        <div class="card-top">
+          <span class="card-badge">HookDeck PRO</span>
+          <span class="card-tag">Slide 1 of 8 • 16:9 HD</span>
+        </div>
+
+        <div class="card-main">
+          <h2 class="slide-title">2026 AI Agent Enterprise Market Strategy</h2>
+          <p class="slide-subtitle">Capturing High-Converting B2B Enterprise Opportunities</p>
+
+          <div class="metric-grid">
+            <div class="metric-box">
+              <div class="metric-val green">+480%</div>
+              <div class="metric-lbl">ARR Growth</div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-val">$12.4M</div>
+              <div class="metric-lbl">Pipeline Ask</div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-val blue">45s</div>
+              <div class="metric-lbl">Gen Speed</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-bottom">
+          <div class="notes-pill">
+            <span>🎙️</span>
+            <span>Embedded Presenter Speech Notes</span>
+          </div>
+          <div class="pptx-pill">
+            .pptx Export
+          </div>
+        </div>
+      </div>
+
+      <div class="floating-pill">
+        <span>⚡</span>
+        <span>Zero Fluff • Pure Leverage</span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
