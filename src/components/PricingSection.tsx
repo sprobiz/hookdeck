@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import PayPalButton from "./PayPalButton";
-import { Check, Zap, Crown, Building2, ShieldCheck, Sparkles, CheckCircle2, ArrowRight } from "lucide-react";
+import { Check, Zap, Crown, Building2, ShieldCheck, Sparkles, CheckCircle2, ArrowRight, FileDown } from "lucide-react";
 import { translations, Language } from "@/utils/translations";
 import { UserPlan } from "@/types/deck";
 
@@ -19,31 +19,48 @@ export default function PricingSection({ lang, userPlan = "free", onPlanSelected
 
   const plans = [
     {
+      id: "single",
+      name: t.singleName,
+      price: "9.99",
+      billingType: t.oneTime || "one-time",
+      description: t.singleDesc,
+      icon: FileDown,
+      features: t.singleFeatures,
+      popular: false,
+      isSinglePass: true,
+    },
+    {
       id: "starter",
       name: t.starterName,
       price: "19",
+      billingType: t.monthly,
       description: t.starterDesc,
       icon: Zap,
       features: t.starterFeatures,
       popular: false,
+      isSinglePass: false,
     },
     {
       id: "pro",
       name: t.proName,
       price: "39",
+      billingType: t.monthly,
       description: t.proDesc,
       icon: Crown,
       features: t.proFeatures,
       popular: true,
+      isSinglePass: false,
     },
     {
       id: "agency",
       name: t.agencyName,
       price: "89",
+      billingType: t.monthly,
       description: t.agencyDesc,
       icon: Building2,
       features: t.agencyFeatures,
       popular: false,
+      isSinglePass: false,
     },
   ];
 
@@ -127,12 +144,30 @@ export default function PricingSection({ lang, userPlan = "free", onPlanSelected
         <h2 className="mt-4 text-3xl sm:text-5xl font-black text-white tracking-tight">
           {t.title}
         </h2>
-        <p className="mt-4 text-base sm:text-lg text-slate-400 leading-relaxed">
+        <p className="mt-4 text-base sm:text-lg text-slate-300 leading-relaxed">
           {t.desc}
         </p>
+
+        {/* 🚀 4단계 초고속 인스턴트 프로세스 안내 배너 */}
+        <div className="mt-8 p-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-left">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-950/60 border border-slate-800/80">
+              <span className="w-5 h-5 rounded-full bg-pink-500/20 text-pink-400 font-black flex items-center justify-center flex-shrink-0">1</span>
+              <span className="text-slate-300">{lang === "ko" ? "결제 즉시 자동 활성화 (대기열 0초)" : "Instant Zero-Queue Activation"}</span>
+            </div>
+            <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-950/60 border border-slate-800/80">
+              <span className="w-5 h-5 rounded-full bg-pink-500/20 text-pink-400 font-black flex items-center justify-center flex-shrink-0">2</span>
+              <span className="text-slate-300">{lang === "ko" ? "워터마크 완전 제거 + 대본 탑재" : "100% Clean PPTX + Notes"}</span>
+            </div>
+            <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-950/60 border border-slate-800/80">
+              <span className="w-5 h-5 rounded-full bg-pink-500/20 text-pink-400 font-black flex items-center justify-center flex-shrink-0">3</span>
+              <span className="text-slate-300">{lang === "ko" ? "웹 실시간 수정 & 무제한 다운로드" : "Live Web Editing & Downloads"}</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
         {plans.map((plan) => {
           const Icon = plan.icon;
           const isSelected = selectedPlan === plan.id;
@@ -142,11 +177,13 @@ export default function PricingSection({ lang, userPlan = "free", onPlanSelected
             <div
               key={plan.id}
               onClick={() => setSelectedPlan(plan.id)}
-              className={`relative flex flex-col justify-between p-8 rounded-3xl transition-all cursor-pointer ${
+              className={`relative flex flex-col justify-between p-7 rounded-3xl transition-all cursor-pointer ${
                 isCurrentActive
                   ? "bg-gradient-to-b from-emerald-950/40 via-slate-900 to-slate-900 border-2 border-emerald-500 shadow-2xl shadow-emerald-500/20 md:scale-105 z-10"
                   : plan.popular
                   ? "bg-gradient-to-b from-blue-900/40 via-slate-900 to-slate-900 border-2 border-blue-500 shadow-2xl shadow-blue-500/20 md:scale-105 z-10"
+                  : plan.isSinglePass
+                  ? "bg-gradient-to-b from-pink-950/40 via-slate-900 to-slate-900 border-2 border-pink-500/60 shadow-xl shadow-pink-500/15"
                   : "bg-slate-900/80 border border-slate-800 hover:border-slate-700 shadow-lg"
               }`}
             >
@@ -158,15 +195,27 @@ export default function PricingSection({ lang, userPlan = "free", onPlanSelected
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-black uppercase tracking-wider rounded-full shadow-md whitespace-nowrap">
                   {t.popularBadge}
                 </div>
+              ) : plan.isSinglePass ? (
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-3 py-1 bg-gradient-to-r from-pink-500 to-rose-500 text-white text-[11px] font-black uppercase tracking-wider rounded-full shadow-md whitespace-nowrap">
+                  {t.singlePassBadge || "1-DECK PASS"}
+                </div>
               ) : null}
 
               <div>
                 <div className="flex items-center justify-between">
-                  <div className="p-2.5 rounded-2xl bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                  <div className={`p-2.5 rounded-2xl border ${
+                    plan.isSinglePass
+                      ? "bg-pink-500/10 text-pink-400 border-pink-500/20"
+                      : "bg-blue-500/10 text-blue-400 border-blue-500/20"
+                  }`}>
                     <Icon className="w-6 h-6" />
                   </div>
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
-                    Billed Monthly
+                  <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full border ${
+                    plan.isSinglePass
+                      ? "bg-pink-950/60 text-pink-300 border-pink-800/60"
+                      : "bg-slate-800 text-slate-400 border-slate-700"
+                  }`}>
+                    {plan.billingType}
                   </span>
                 </div>
 
@@ -177,7 +226,7 @@ export default function PricingSection({ lang, userPlan = "free", onPlanSelected
                   <span className="text-4xl sm:text-5xl font-black text-white tracking-tight">
                     ${plan.price}
                   </span>
-                  <span className="text-sm font-semibold text-slate-400">{t.monthly}</span>
+                  <span className="text-sm font-semibold text-slate-400">{plan.billingType}</span>
                 </div>
 
                 <ul className="mt-8 space-y-3.5">

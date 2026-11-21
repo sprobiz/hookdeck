@@ -21,6 +21,8 @@ import {
 import SlideViewer from "@/components/SlideViewer";
 import PricingSection from "@/components/PricingSection";
 import ThemeShowcase from "@/components/ThemeShowcase";
+import SpeakerNotesShowcase from "@/components/SpeakerNotesShowcase";
+import FrameworkGallery from "@/components/FrameworkGallery";
 import { DeckResponse, UserPlan } from "@/types/deck";
 import { translations, Language } from "@/utils/translations";
 import { THEMES_LIST } from "@/utils/themes";
@@ -46,7 +48,7 @@ export default function Home() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedPlan = localStorage.getItem("hookdeck_user_plan") as UserPlan | null;
-      if (savedPlan && ["starter", "pro", "agency"].includes(savedPlan)) {
+      if (savedPlan && ["single", "starter", "pro", "agency"].includes(savedPlan)) {
         setUserPlan(savedPlan);
       }
     }
@@ -577,6 +579,20 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* 🎙️ 1등 킬러 기능: 파워포인트 비고란(Speaker Notes) 1분 대본 시각적 쇼케이스 */}
+        <SpeakerNotesShowcase lang={lang} />
+
+        {/* 🏛️ 20+ 전문 프레임워크 실시간 갤러리 */}
+        <FrameworkGallery
+          lang={lang}
+          onSelectTopic={(selectedTitle, selectedFwId) => {
+            setTopic(selectedTitle);
+            if (selectedFwId) setFrameworkId(selectedFwId);
+            const genElem = document.getElementById("generator");
+            if (genElem) genElem.scrollIntoView({ behavior: "smooth" });
+          }}
+        />
 
         {/* Before / After 비교 섹션 */}
         <section id="comparison" className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">

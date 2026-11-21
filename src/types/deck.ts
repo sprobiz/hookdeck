@@ -1,4 +1,4 @@
-export type UserPlan = 'free' | 'starter' | 'pro' | 'agency';
+export type UserPlan = 'free' | 'single' | 'starter' | 'pro' | 'agency';
 
 export interface SlideItem {
   id: number;
